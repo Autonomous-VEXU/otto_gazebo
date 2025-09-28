@@ -43,10 +43,44 @@
     		</inertial>
 	</link>
 
+
+	<!--Sensor links-->
+	<link name="imu_link"/>
+
+	<link name="base_scan">
+			<visual>
+				<origin xyz="0 0 0.0" rpy="0 0 0"/>
+				<geometry>
+					<cylinder length="0.0315" radius="0.055"/>
+				</geometry>
+				<material name="dark_grey">
+					<color rgba="0.2 0.2 0.2 1.0"/>
+				</material>
+			</visual>
+
+			<collision>
+				<origin xyz="0.015 0 -0.0065" rpy="0 0 0"/>
+				<geometry>
+					<cylinder length="0.0315" radius="0.055"/>
+				</geometry>
+			</collision>
+
+			<inertial>
+				<origin xyz="0 0 0" />
+				<mass value="0.114" />
+				<inertia 
+				ixx="0.001" 
+				ixy="0.0" 
+				ixz="0.0" 
+				iyy="0.001" 
+				iyz="0.0" 
+				izz="0.001"/>
+			</inertial>
+	</link>
+
 	<!-- wheels -->
 	<xacro:macro name="wheel_link" params="name">
 		<link name="${name}">
-
 			<visual>
 			<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
 				<geometry>
@@ -92,7 +126,6 @@
 	<xacro:wheel_link name="wheel_c"/>
 	<xacro:wheel_link name="wheel_d"/>
 
-
 	<!-- joints -->
 	<joint name="world_2_chassis" type='fixed'>
 		<origin xyz="0 0 0.025" rpy="0 0 0"/>
@@ -128,6 +161,19 @@
 		<axis xyz="0 1 0"/> 
     </joint>
 
+	<!--Sensor Joints-->
+	<joint name="imu_joint" type="fixed">
+		<parent link="base_link"/>
+		<child link="imu_link"/>
+		<origin xyz="0 0 0.04" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="scan_joint" type='fixed'>
+		<parent link="base_link"/>
+		<child link="base_scan"/>
+		<origin xyz="0 0 0.1" rpy="0 0 0"/>
+	</joint>
+
 	<!-- ROS 2 Control-->
 	<ros2_control name="GazeboSystem" type="system">
 	    <hardware>
@@ -154,6 +200,7 @@
 			<state_interface name="velocity"/>
  		</joint>
 	</ros2_control>
+
 	<!-- gazebo stuff -->
 	<gazebo>
   		<plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
