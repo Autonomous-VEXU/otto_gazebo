@@ -11,7 +11,6 @@
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-   <exec_depend>turtlebot3_gazebo</exec_depend> <!--still have empty_world.world in empty world launch file :(-->
 
   <export>
     <build_type>ament_cmake</build_type>
