@@ -17,9 +17,9 @@ def generate_launch_description():
     y_pose = LaunchConfiguration('y_pose', default='0.0')
 
     world = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'), # remember to change this later!
+        get_package_share_directory('pushback_sim'), # remember to change this later!
         'worlds',
-        'empty_world.world'
+        'empty.sdf'
     )
 
     gzserver_cmd = IncludeLaunchDescription(
