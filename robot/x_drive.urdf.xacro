@@ -17,7 +17,7 @@
     <link name="base_link">
         <visual>
             <geometry>
-                <mesh filename='${model_path}/chassis.dae'/>
+                <mesh filename='${model_path}/chassis-v2.dae'/>
             </geometry>
             <material name="pink">
                 <color rgba="0.93 0.28 0.60 1.0"/> 
