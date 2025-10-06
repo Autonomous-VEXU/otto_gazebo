@@ -108,7 +108,7 @@ def generate_launch_description():
     odom_to_base_tf = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_footprint'],
+        arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_link'],
         parameters=[{'use_sim_time': True}]
     )
 
@@ -122,10 +122,9 @@ def generate_launch_description():
     base_link_tf = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'base_footprint', 'base_link'],
+        arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'base_footprint'],
         parameters=[{'use_sim_time': True}]
     )
-
 
     start_gazebo_ros_image_bridge_cmd = Node(
         package='ros_gz_image',
@@ -171,6 +170,7 @@ def generate_launch_description():
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
         tf_bridge,
+        tf_st_bridge,
         odom_to_base_tf,
         sensor_msg_bridge,
         lidar_tf,

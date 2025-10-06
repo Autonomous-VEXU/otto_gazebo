@@ -11,10 +11,10 @@
     <xacro:property name="wheel_width" value="0.02159"/>
     
     <!--world link-->
-    <link name='base_footprint'/>
+    <link name='base_link'/>
 
     <!--chassis link-->
-    <link name="base_link">
+    <link name="chassis">
         <visual>
             <geometry>
                 <mesh filename='${model_path}/chassis-v2.dae'/>
@@ -129,47 +129,47 @@
     <!-- joints -->
     <joint name="world_2_chassis" type='fixed'>
         <origin xyz="0 0 0.025" rpy="0 0 0"/>
-        <parent link='base_footprint'/>
-        <child link='base_link'/>
+        <parent link='base_link'/>
+        <child link='chassis'/>
     </joint>
 
     <joint name="chassis_to_wheel_a" type="continuous">
         <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi/4}"/>
-        <parent link="base_link"/>
+        <parent link="chassis"/>
         <child link="wheel_a"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
     <joint name="chassis_to_wheel_b" type="continuous">
         <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${-3* (pi/4)}"/>
-        <parent link="base_link"/>
+        <parent link="chassis"/>
         <child link="wheel_b"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
     <joint name="chassis_to_wheel_c" type="continuous">
         <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi/4}"/>
-        <parent link="base_link"/>
+        <parent link="chassis"/>
         <child link="wheel_c"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
     <joint name="chassis_to_wheel_d" type="continuous">
         <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${3 *(pi/4)}"/>
-        <parent link="base_link"/>
+        <parent link="chassis"/>
         <child link="wheel_d"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
     <!--Sensor Joints-->
     <joint name="imu_joint" type="fixed">
-        <parent link="base_link"/>
+        <parent link="chassis"/>
         <child link="imu_link"/>
         <origin xyz="0 0 0.04" rpy="0 0 0"/>
     </joint>
 
     <joint name="laser_joint" type="fixed">
-         <parent link="base_link"/>
+         <parent link="chassis"/>
          <child link="laser_frame"/>
         <origin xyz="0 0 0.2" rpy="0 0 0"/>
       </joint>
