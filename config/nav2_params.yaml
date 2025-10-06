@@ -39,7 +39,7 @@ amcl:
     z_short: 0.05
     scan_topic: scan
     map_topic: map
-    set_initial_pose: false
+    set_initial_pose: true
     always_reset_initial_pose: true
     first_map_only: false
     initial_pose:
@@ -374,7 +374,7 @@ behavior_server:
     cycle_frequency: 10.0
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait", "assisted_teleop"]
     spin:
-      plugin: "nav2_behaviors::Spin" # In Iron and older versions, "/" was used instead of "::"
+      plugin: "nav2_behaviors::Spin" 
     backup:
       plugin: "nav2_behaviors::BackUp" # In Iron and older versions, "/" was used instead of "::"
     drive_on_heading:

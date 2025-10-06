@@ -28,7 +28,6 @@ def generate_launch_description():
         parameters=[config_path, 
                     {'publish_stamped_twist': publish_stamped_twist}, 
                     {'require_enable_button': False}],
-        remappings={('/cmd_vel', '/omni_wheel_drive_controller/cmd_vel')}
     )
 
     return launch.LaunchDescription([
