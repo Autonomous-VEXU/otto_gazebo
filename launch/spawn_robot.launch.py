@@ -58,10 +58,25 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
-            '/tf_static@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
         ],
         parameters=[{'use_sim_time': True}],
+        output='screen'
+    )
+
+
+    tf_st_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/tf_static@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
+        ],
+        parameters=[{'use_sim_time': True},
+            {'qos_overrides./tf_static.publisher.reliability': 'reliable'},
+            {'qos_overrides./tf_static.publisher.durability': 'transient_local'},
+            {'qos_overrides./tf_static.publisher.history': 'keep_last'},
+            {'qos_overrides./tf_static.publisher.depth': 1}
+        ],
         output='screen'
     )
 
@@ -97,12 +112,20 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
     )
 
-    static_tf_pub = Node( # make sure to remap
+    lidar_tf = Node( # make sure to remap
         package='tf2_ros',
         executable='static_transform_publisher',
         arguments=['0', '0', '0', '0', '0', '0', 'laser_frame', 'vex_robot/base_footprint/laser'],
         parameters=[{'use_sim_time': True}]
     )
+
+    base_link_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=['0', '0', '0', '0', '0', '0', 'base_footprint', 'base_link'],
+        parameters=[{'use_sim_time': True}]
+    )
+
 
     start_gazebo_ros_image_bridge_cmd = Node(
         package='ros_gz_image',
@@ -150,7 +173,8 @@ def generate_launch_description():
         tf_bridge,
         odom_to_base_tf,
         sensor_msg_bridge,
-        static_tf_pub,
+        lidar_tf,
+        base_link_tf,
         start_gazebo_ros_image_bridge_cmd,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
