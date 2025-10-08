@@ -29,7 +29,7 @@ def generate_launch_description():
         default=os.path.join(
             get_package_share_directory('robot_gazebo'),
             'config',
-            param_file_name)
+            'nav2.yaml')
     )
     
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
