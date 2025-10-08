@@ -10,7 +10,7 @@ import xacro
 
 def generate_launch_description():
    
-    # URDF file path
+    ## ============= URDF Path + Conversion ============== ##
     urdf_path = os.path.join(
         get_package_share_directory('robot_gazebo'),
         'robot',
@@ -19,6 +19,7 @@ def generate_launch_description():
 
     urdf = xacro.process_file(urdf_path).toxml()
     
+    ## ============= X and Y Spawn Position ============== ##
     declare_x_position_cmd = DeclareLaunchArgument(
         'x_pose', 
         default_value='0.0',
@@ -27,13 +28,14 @@ def generate_launch_description():
 
     declare_y_position_cmd = DeclareLaunchArgument(
         'y_pose', 
-        default_value='0.0',
+        default_value='2.0',
         description='Y position of the robot'
     ) 
 
     x_pose = LaunchConfiguration('x_pose')
     y_pose = LaunchConfiguration('y_pose')
 
+    ## ============= Robot State Publisher ============== ##
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -44,11 +46,12 @@ def generate_launch_description():
         ]
     ) 
 
+    ## ============= Gazebo <--> ROS Bridge ============== ##
     clock_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/clock@rosgraph_msgs/msg/Clock@gz.msgs.Clock',
         ],
         parameters=[{'use_sim_time': True}],
         output='screen'
@@ -58,14 +61,46 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
-            '/tf_static@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V'
+        ],
+        parameters=[{'use_sim_time': True}],
+        output='screen'
+    )    
+    
+    sensor_msg_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
         ],
         parameters=[{'use_sim_time': True}],
         output='screen'
     )
 
-    # spawn robot
+    tf_st_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/tf_static@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V'
+        ],
+        parameters=[{'use_sim_time': True},
+            {'qos_overrides./tf_static.publisher.reliability': 'reliable'},
+            {'qos_overrides./tf_static.publisher.durability': 'transient_local'},
+            {'qos_overrides./tf_static.publisher.history': 'keep_last'},
+            {'qos_overrides./tf_static.publisher.depth': 1}
+        ],
+        output='screen'
+    )    
+
+    start_gazebo_ros_image_bridge_cmd = Node(
+        package='ros_gz_image',
+        executable='image_bridge',
+        arguments=['/camera/image_raw'],
+        parameters=[{'use_sim_time': True}],
+        output='screen'
+    )
+
+    ## ============= Gazebo Sim ============== ##
     start_gazebo_ros_spawner_cmd = Node(
         package='ros_gz_sim',
         executable='create',
@@ -79,39 +114,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # LiDAR and other sensors
-    sensor_msg_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/LaserScan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
-        ],
-        parameters=[{'use_sim_time': True}],
-        output='screen'
-    )
-
-    odom_to_base_tf = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_footprint'],
-        parameters=[{'use_sim_time': True}]
-    )
-
-    static_tf_pub = Node( # make sure to remap
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'laser_frame', 'vex_robot/base_footprint/laser'],
-        parameters=[{'use_sim_time': True}]
-    )
-
-    start_gazebo_ros_image_bridge_cmd = Node(
-        package='ros_gz_image',
-        executable='image_bridge',
-        arguments=['/camera/image_raw'],
-        parameters=[{'use_sim_time': True}],
-        output='screen'
-    )
-
+    ## ============= Controller Managers ============== ##
     joint_state_broadcaster_spawner = TimerAction(
         period=6.0,
         actions=[
@@ -131,10 +134,12 @@ def generate_launch_description():
             Node(
                 package='controller_manager',
                 executable='spawner',
-                arguments=['omni_wheel_drive_controller', '--controller-manager', '/controller_manager'],
+                arguments=['omni_wheel_drive_controller', '--controller-manager', '/controller_manager','--controller-ros-args','-r /omni_wheel_drive_controller/odom:=/odom',
+                           '--controller-ros-args','-r /omni_wheel_drive_controller/cmd_vel:=/cmd_vel'],
                 parameters=[{'use_sim_time': True}],
                 remappings=[
-                ('/omni_wheel_drive_controller/cmd_vel', '/cmd_vel'), 
+                ('cmd_vel', '/cmd_vel'), 
+                ('odom', '/odom'), 
                 ],
                 output='screen'
             )
@@ -148,9 +153,8 @@ def generate_launch_description():
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
         tf_bridge,
-        odom_to_base_tf,
+        tf_st_bridge,
         sensor_msg_bridge,
-        static_tf_pub,
         start_gazebo_ros_image_bridge_cmd,
         joint_state_broadcaster_spawner,
         omni_controller_spawner

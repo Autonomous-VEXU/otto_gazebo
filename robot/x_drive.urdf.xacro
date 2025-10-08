@@ -13,7 +13,7 @@
     <!--world link-->
     <link name='base_footprint'/>
 
-    <!--chassis link-->
+    <!--base_link link-->
     <link name="base_link">
         <visual>
             <geometry>
@@ -42,7 +42,6 @@
                 izz="0.10974"/>
             </inertial>
     </link>
-
 
     <!--Sensor links-->
     <link name="imu_link"/>
@@ -100,8 +99,8 @@
                     <friction>
                         <ode>
                             <mu>1.0</mu>
-                            <mu2>1.0</mu2>
-                            <fdir1>0 0 1</fdir1>
+                            <mu2>0.01</mu2>
+                            <fdir1>1 0 0</fdir1>
                         </ode>
                     </friction>
                 </surface>
@@ -127,7 +126,7 @@
     <xacro:wheel_link name="wheel_d"/>
 
     <!-- joints -->
-    <joint name="world_2_chassis" type='fixed'>
+    <joint name="footprint_2_link" type='fixed'>
         <origin xyz="0 0 0.025" rpy="0 0 0"/>
         <parent link='base_footprint'/>
         <child link='base_link'/>
@@ -210,12 +209,13 @@
 
     <!-- Sensor Gazebo Tag-->
     <gazebo reference="laser_frame">
-        <sensor name="laser" type="gpu_lidar">
+        <sensor name="lidar" type="gpu_lidar">
             <pose>0 0 0 0 0 0</pose>
             <always_on>true</always_on>
             <visualize>true</visualize>
             <update_rate>10</update_rate>
-            <topic>LaserScan</topic>
+            <topic>scan</topic>
+            <gz_frame_id>laser_frame</gz_frame_id>
             <lidar>
                 <scan>
                     <horizontal>
