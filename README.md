@@ -21,6 +21,7 @@ Gazebo Harmonic implementation of an x drive holonomic robot.
 ```
 /robot_gazebo
 ├── /config
+│   ├── nav2.yaml
 │   ├── omni_wheel_params.yaml
 │   ├── x_drive_bridge.yaml
 │   └── xbox_controller.yaml
@@ -39,7 +40,6 @@ To spawn the robot in a pre-existing Gazebo Sim session:</br>
 
 To start tele-op mode after spawning the robot in: </br>
 `ros2 launch robot_gazebo controller.launch.py`</br>
-
 
 > NB: Do not forget to build the workspace by running `colcon build --symlink-install` and then `source install/setup.bash` inside of the workspace directory
 
