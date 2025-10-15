@@ -7,7 +7,7 @@
     <xacro:property name="model_path" value="package://robot_description/models"/>
     <xacro:property name="package_path" value="package://robot_gazebo/config"/>
     <xacro:property name="wheel_offs" value="0.14"/>
-    <xacro:property name="wheel_rad" value="0.01375"/>
+    <xacro:property name="wheel_rad" value="0.03493"/>
     <xacro:property name="wheel_width" value="0.02159"/>
     
     <!--world link-->
@@ -16,17 +16,32 @@
     <!--base_link link-->
     <link name="base_link">
         <visual>
+            <!--
             <geometry>
                 <mesh filename='${model_path}/chassis-v2.dae'/>
             </geometry>
+-->
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+
+            <geometry>  
+                <cylinder length="0.0315" radius="0.055"/>
+            </geometry>
+
             <material name="pink">
                 <color rgba="0.93 0.28 0.60 1.0"/> 
             </material>
         </visual>
 
         <collision>
+        <!--
             <geometry>
                 <mesh filename='${model_path}/chassis.dae'/>
+            </geometry>
+        -->
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+
+            <geometry>
+                <cylinder length="0.0315" radius="0.055"/>
             </geometry>
         </collision>
 
@@ -83,7 +98,7 @@
             <visual>
             <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
                 <geometry>
-                    <cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
+                    <cylinder radius='${wheel_rad}' length='${wheel_width}' />
                 </geometry>
                 <material name="dark_grey">
                     <color rgba="0.2 0.2 0.2 1.0"/>
@@ -93,7 +108,7 @@
             <collision>
             <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
                 <geometry>
-                    <cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
+                    <cylinder radius='${wheel_rad}' length='${wheel_width}' />
                 </geometry>
                     <surface>
                     <friction>
