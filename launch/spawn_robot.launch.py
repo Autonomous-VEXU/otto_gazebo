@@ -65,7 +65,7 @@ def generate_launch_description():
         ],
         parameters=[{'use_sim_time': True}],
         output='screen'
-    )    
+    )   
     
     sensor_msg_bridge = Node(
         package='ros_gz_bridge',
@@ -92,10 +92,19 @@ def generate_launch_description():
         output='screen'
     )    
 
-    start_gazebo_ros_image_bridge_cmd = Node(
-        package='ros_gz_image',
-        executable='image_bridge',
-        arguments=['/camera/image_raw'],
+    image_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/cam1/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam1/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/cam2/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam2/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/cam3/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam3/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/cam4/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam4/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo'
+        ],
         parameters=[{'use_sim_time': True}],
         output='screen'
     )
@@ -155,7 +164,7 @@ def generate_launch_description():
         tf_bridge,
         tf_st_bridge,
         sensor_msg_bridge,
-        start_gazebo_ros_image_bridge_cmd,
+        image_bridge,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])

@@ -7,7 +7,7 @@
     <xacro:property name="model_path" value="package://robot_description/models"/>
     <xacro:property name="package_path" value="package://robot_gazebo/config"/>
     <xacro:property name="wheel_offs" value="0.14"/>
-     <xacro:property name="wheel_rad" value="0.0349253"/>
+    <xacro:property name="wheel_rad" value="0.0349253"/>
     <xacro:property name="wheel_width" value="0.02159"/>
     
     <!--world link-->
@@ -21,10 +21,10 @@
                 <mesh filename='${model_path}/chassis-v2.dae'/>
             </geometry>
             -->
-            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+            <origin xyz="0 0 0.05" rpy="0 0 0"/>
 
             <geometry>  
-                <cylinder length="0.0315" radius="0.055"/>
+                <box size='0.20 0.20 0.02'/>
             </geometry>
 
             <material name="pink">
@@ -142,7 +142,86 @@
     <xacro:wheel_link name="wheel_c"/>
     <xacro:wheel_link name="wheel_d"/>
 
-    <!-- joints -->
+    <!-- Camera Xacro -->
+    <xacro:macro name='usb_cam' params='camera_name xyz rpy px_w px_h'>
+        <link name='${camera_name}_link'>
+            <visual>
+                <geometry>
+                    <box size='0.02 0.02 0.02'/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <box size='0.02 0.02 0.02'/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.01"/>
+                <inertia
+                    ixx="0.000001"
+                    ixy="0.0"
+                    ixz="0.0"
+                    iyy="0.000001"
+                    iyz="0.0"
+                    izz="0.000001"/>
+            </inertial>
+        </link>
+
+        <joint name="${camera_name}_joint" type="fixed">
+            <parent link="base_link"/>
+            <child link="${camera_name}_link"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+        </joint>
+
+        <link name="${camera_name}_link_optical"/>
+
+        <joint name="${camera_name}_optical_joint" type="fixed">
+            <parent link="${camera_name}_link"/>
+            <child link="${camera_name}_link_optical"/>
+            <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+        </joint>
+
+        <gazebo reference='${camera_name}_link'>
+            <sensor name='${camera_name}_sensor' type="camera">
+                <pose>0 0 0 0 0 0</pose>
+                <camera>
+                    <horizontal_fov>1.047</horizontal_fov>
+                    <image>
+                        <width>${px_w}</width>
+                        <height>${px_h}</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.1</near>
+                        <far>100</far>
+                    </clip>
+                </camera>
+                <always_on>true</always_on>
+                <update_rate>30</update_rate>
+                <visualize>true</visualize>
+                <topic>/${camera_name}/image_raw</topic>
+                <gz_frame_id>${camera_name}_link_optical</gz_frame_id>
+            </sensor>
+        </gazebo>
+    </xacro:macro> 
+
+    <xacro:usb_cam camera_name='cam1' px_w='1920' px_h='1200' xyz='0.1 0 0.1' rpy='0 0 0'/> 
+    <xacro:usb_cam camera_name='cam2' px_w='1920' px_h='1200' xyz='-0.1 0 0.1' rpy='0 0 ${pi}'/> 
+    <xacro:usb_cam camera_name='cam3' px_w='1920' px_h='1200' xyz='0 0.1 0.1' rpy='0 0 ${pi/2}'/> 
+    <xacro:usb_cam camera_name='cam4' px_w='1920' px_h='1200' xyz='0 -0.1 0.1' rpy='0 0 -${pi/2}'/> 
+
+
+    <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
+
+    <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
         <origin xyz="0 0 0.025" rpy="0 0 0"/>
         <parent link='base_footprint'/>
@@ -185,10 +264,10 @@
     </joint>
 
     <joint name="laser_joint" type="fixed">
-         <parent link="base_link"/>
-         <child link="laser_frame"/>
+        <parent link="base_link"/>
+        <child link="laser_frame"/>
         <origin xyz="0 0 0.2" rpy="0 0 0"/>
-      </joint>
+    </joint>
 
     <!-- ROS 2 Control-->
     <ros2_control name="GazeboSystem" type="system">
@@ -199,22 +278,22 @@
                <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
         <joint name="chassis_to_wheel_b">
                <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
         <joint name="chassis_to_wheel_c">
                <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
         <joint name="chassis_to_wheel_d">
                <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
     </ros2_control>
 
     <!-- Gazebo Sim Plugins -->
@@ -255,5 +334,4 @@
             </lidar>
         </sensor>
     </gazebo>
-
 </robot>
