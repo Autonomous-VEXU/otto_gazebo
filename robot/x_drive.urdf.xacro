@@ -123,15 +123,14 @@
             </inertial>
         </link>
 
-    <gazebo reference="${name}">
-        <mu1 value="0.2"/>
-        <mu2 value="1.5"/>
-        <kp value="10000000.0" />
-        <kd value="10000.0" />
-        <fdir1 value="0 0 1"/>
-        <maxContacts value= "1"/>
-    </gazebo>
-
+        <gazebo reference="${name}">
+            <mu1 value="0.2"/>
+            <mu2 value="1.5"/>
+            <kp value="10000000.0" />
+            <kd value="10000.0" />
+            <fdir1 value="0 0 1"/>
+            <maxContacts value= "1"/>
+        </gazebo>
     </xacro:macro>
 
     <xacro:wheel_link name="wheel_a"/>
@@ -212,10 +211,10 @@
     </xacro:macro> 
 
     <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
-    <xacro:usb_cam camera_name='cam1' px_w='1920' px_h='1200' xyz='-0.08 0.08 0.1' rpy='0 0 ${3*pi/4}'/> 
-    <xacro:usb_cam camera_name='cam2' px_w='1920' px_h='1200' xyz='-0.08 -0.08 0.1' rpy='0 0 -${3*pi/4}'/> 
-    <xacro:usb_cam camera_name='cam3' px_w='1920' px_h='1200' xyz='0.08 0.08 0.1' rpy='0 0 ${pi/4}'/> 
-    <xacro:usb_cam camera_name='cam4' px_w='1920' px_h='1200' xyz='0.08 -0.08 0.1' rpy='0 0 -${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam1' px_w='1920' px_h='1200' xyz='-0.08 0.08 0.2' rpy='0 0 ${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam2' px_w='1920' px_h='1200' xyz='-0.08 -0.08 0.2' rpy='0 0 -${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam3' px_w='1920' px_h='1200' xyz='0.08 0.08 0.2' rpy='0 0 ${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam4' px_w='1920' px_h='1200' xyz='0.08 -0.08 0.2' rpy='0 0 -${pi/4}'/> 
 
     <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
