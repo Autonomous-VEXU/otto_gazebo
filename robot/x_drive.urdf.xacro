@@ -1,13 +1,22 @@
 <?xml version='1.0'?>
 <robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
 
-    <static>false</static> 
+    <static>false</static>
+
     <!-- properties-->
     <xacro:property name="model_path" value="package://robot_description/models"/>
     <xacro:property name="package_path" value="package://robot_gazebo/config"/>
+
+    <!--Wheel properties-->
     <xacro:property name="wheel_offs" value="0.14"/>
     <xacro:property name="wheel_rad" value="0.0349253"/>
     <xacro:property name="wheel_width" value="0.02159"/>
+
+    <!-- Camera properties-->
+    <xacro:property name="camera_x" value="0.114"/>
+    <xacro:property name="camera_y" value="0.116"/>
+    <xacro:property name="camera_z" value="0.197"/>
+
     
     <!--world link-->
     <link name='base_footprint'/>
@@ -56,9 +65,10 @@
             </inertial>
     </link>
 
-    <!--Sensor links-->
+    <!--imu link-->
     <link name="imu_link"/>
 
+    <!-- LiDAR -->
     <link name="laser_frame">
             <visual>
                 <origin xyz="0 0 0.0" rpy="0 0 0"/>
@@ -139,7 +149,8 @@
     <xacro:wheel_link name="wheel_d"/>
 
     <!-- Camera Xacro -->
-    <xacro:macro name='usb_cam' params='camera_name xyz rpy px_w px_h'>
+    <xacro:macro name='usb_cam' params='camera_name xyz rpy'>
+
         <link name='${camera_name}_link'>
             <visual>
                 <geometry>
@@ -190,19 +201,19 @@
             <sensor name='${camera_name}_sensor' type="camera">
                 <pose>0 0 0 0 0 0</pose>
                 <camera>
-                    <horizontal_fov>1.0</horizontal_fov>
+                    <horizontal_fov>1.26</horizontal_fov>
                     <image>
-                        <width>${px_w}</width>
-                        <height>${px_h}</height>
+                        <width>1920</width>
+                        <height>1200</height>
                         <format>R8G8B8</format>
                     </image>
                     <clip>
-                        <near>0.1</near>
-                        <far>100</far>
+                        <near>0.001</near>
+                        <far>20</far>
                     </clip> 
                 </camera>
                 <always_on>true</always_on>
-                <update_rate>10</update_rate> <!-- i think our cameras run at 90fps max, but for sim 30 kills it. maybe 10 will be better? -->
+                <update_rate>10</update_rate> <!-- i think our cameras run at 90fps max, but for sim, even 30 kills it. maybe 10 will be better? -->
                 <visualize>true</visualize>
                 <topic>/${camera_name}/image_raw</topic>
                 <gz_frame_id>${camera_name}_link_optical</gz_frame_id>
@@ -211,11 +222,11 @@
     </xacro:macro> 
 
     <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
-    <xacro:usb_cam camera_name='cam1' px_w='1920' px_h='1200' xyz='-0.08 0.08 0.2' rpy='0 0 ${3*pi/4}'/> 
-    <xacro:usb_cam camera_name='cam2' px_w='1920' px_h='1200' xyz='-0.08 -0.08 0.2' rpy='0 0 -${3*pi/4}'/> 
-    <xacro:usb_cam camera_name='cam3' px_w='1920' px_h='1200' xyz='0.08 0.08 0.2' rpy='0 0 ${pi/4}'/> 
-    <xacro:usb_cam camera_name='cam4' px_w='1920' px_h='1200' xyz='0.08 -0.08 0.2' rpy='0 0 -${pi/4}'/> 
-
+    <xacro:usb_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${pi/4}'/> 
+    
     <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
         <origin xyz="0 0 0.025" rpy="0 0 0"/>
@@ -261,7 +272,7 @@
     <joint name="laser_joint" type="fixed">
         <parent link="base_link"/>
         <child link="laser_frame"/>
-        <origin xyz="0 0 0.2" rpy="0 0 0"/> 
+        <origin xyz="0 0 0.1" rpy="0 0 0"/> 
     </joint>
 
     <!-- ROS 2 Control-->
