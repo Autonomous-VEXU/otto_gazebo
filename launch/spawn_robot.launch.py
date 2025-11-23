@@ -72,7 +72,8 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+            '/scan_1@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/scan_2@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan'
         ],
         parameters=[{'use_sim_time': True}],
         output='screen'
