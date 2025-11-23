@@ -19,13 +19,6 @@
   gz_type_name: "gz.msgs.Pose_V"
   direction: BIDIRECTIONAL
 
-# tf static 
-- ros_topic_name: "tf_static"
-  gz_topic_name: "tf_static"
-  ros_type_name: "tf2_msgs/msg/TFMessage"
-  gz_type_name: "gz.msgs.Pose_V"
-  direction: BIDIRECTIONAL
-
 # gz topic subscribed to by OmniWheelDrive plugin
 - ros_topic_name: "cmd_vel"
   gz_topic_name: "cmd_vel"
@@ -54,7 +47,14 @@
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
 
-# maybe add the merged scan topic?
+# # Merged LiDAR scan
+# - ros_topic_name: "scan_3"
+#   gz_topic_name: "scan_3"
+#   ros_type_name: "sensor_msgs/msg/LaserScan"
+#   gz_type_name: "gz.msgs.LaserScan"
+#   direction: ROS_TO_GZ
+
+
 
 ## ----------- Camera 1 ----------- ##
 

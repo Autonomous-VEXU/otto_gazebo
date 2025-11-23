@@ -3,7 +3,8 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, TimerAction
+from launch.actions import DeclareLaunchArgument, TimerAction, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ros_gz_bridge.actions import RosGzBridge
@@ -66,8 +67,24 @@ def generate_launch_description():
         config_file=LaunchConfiguration('config_file'),
     )
 
+
+    tf_st_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/tf_static@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V'
+        ],
+        parameters=[{'use_sim_time': True},
+            {'qos_overrides./tf_static.publisher.reliability': 'reliable'},
+            {'qos_overrides./tf_static.publisher.durability': 'transient_local'},
+            {'qos_overrides./tf_static.publisher.history': 'keep_last'},
+            {'qos_overrides./tf_static.publisher.depth': 1}
+        ],
+        output='screen'
+    )    
+
     ## ============= LiDAR Specific ============== ##
-    merge_lidar_scans = Node(
+    lidar_scan_toggle = Node(
             package='topic_tools',
             executable='mux',
             name='mux_laser_scan', 
@@ -77,6 +94,22 @@ def generate_launch_description():
                 'scan_2'
             ],
             output='screen'
+    )
+    ''' 
+    gzserver_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(ros_gz_sim, 'launch', 'gz_sim.launch.py')
+        ),
+        launch_arguments={'gz_args': ['-r -s -v2 ', world], 'on_exit_shutdown': 'true', 'use_sim_time': 'true'}.items()
+    )
+    '''
+    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
+
+    scan_merger = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
+        ),
+        launch_arguments={'robotname':'x_drive'}.items()
     )
 
     ## ============= Gazebo Sim ============== ##
@@ -132,9 +165,11 @@ def generate_launch_description():
         declare_config_file_cmd,
         declare_bridge_name_cmd,
         gazebo_bridge,
+        tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
-        merge_lidar_scans,
+        lidar_scan_toggle,
+        # scan_merger,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])
