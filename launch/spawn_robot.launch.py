@@ -129,6 +129,20 @@ def generate_launch_description():
     #     config_file=LaunchConfiguration('config_file'),
     # )
 
+    # ros2 run topic_tools mux <outtopic> <intopic1> [intopic2...] to merge both scan topics
+
+    merge_lidar_scans = Node(
+            package='topic_tools',
+            executable='mux',
+            name='mux_laser_scan', 
+            arguments=[
+                'scan',
+                'scan_1',
+                'scan_2'
+            ],
+            output='screen'
+    )
+
     ## ============= Gazebo Sim ============== ##
     start_gazebo_ros_spawner_cmd = Node(
         package='ros_gz_sim',
@@ -141,8 +155,7 @@ def generate_launch_description():
             '-z', '0.01'
         ],
         parameters=[{'use_sim_time': True}],
-        output='screen',
-
+        output='screen'
     )
 
     ## ============= Controller Managers ============== ##
@@ -187,6 +200,7 @@ def generate_launch_description():
         tf_st_bridge,
         sensor_msg_bridge,
         image_bridge,
+        merge_lidar_scans,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])
