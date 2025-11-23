@@ -6,9 +6,17 @@
     <!-- properties-->
     <xacro:property name="model_path" value="package://robot_description/models"/>
     <xacro:property name="package_path" value="package://robot_gazebo/config"/>
+
+    <!--Wheel properties-->
     <xacro:property name="wheel_offs" value="0.14"/>
-     <xacro:property name="wheel_rad" value="0.0349253"/>
+    <xacro:property name="wheel_rad" value="0.0349253"/>
     <xacro:property name="wheel_width" value="0.02159"/>
+
+    <!-- Camera properties-->
+    <xacro:property name="camera_x" value="0.114"/>
+    <xacro:property name="camera_y" value="0.116"/>
+    <xacro:property name="camera_z" value="0.197"/>
+
     
     <!--world link-->
     <link name='base_footprint'/>
@@ -21,10 +29,10 @@
                 <mesh filename='${model_path}/chassis-v2.dae'/>
             </geometry>
             -->
-            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+            <origin xyz="0 0 0.05" rpy="0 0 0"/>
 
             <geometry>  
-                <cylinder length="0.0315" radius="0.055"/>
+                <box size='0.20 0.20 0.02'/>
             </geometry>
 
             <material name="pink">
@@ -33,16 +41,14 @@
         </visual>
 
         <collision>
-
             <!--
             <geometry>
                 <mesh filename='${model_path}/chassis.dae'/>
             </geometry>
             -->
-            <origin xyz="0 0 0.25" rpy="0 0 0"/>
-
+            <origin xyz="0 0 0.05" rpy="0 0 0"/>
             <geometry>
-                <cylinder length="0.0315" radius="0.055"/>
+                 <box size='0.20 0.20 0.02'/>
             </geometry>
         </collision>
 
@@ -50,7 +56,7 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="4.54"/>
            <inertia
-                  ixx="0.05487"
+                ixx="0.05487"
                 ixy="0.0"
                 ixz="0.0"
                 iyy="0.05487"
@@ -59,9 +65,10 @@
             </inertial>
     </link>
 
-    <!--Sensor links-->
+    <!--imu link-->
     <link name="imu_link"/>
 
+    <!-- LiDAR -->
     <link name="laser_frame">
             <visual>
                 <origin xyz="0 0 0.0" rpy="0 0 0"/>
@@ -74,7 +81,7 @@
             </visual>
 
             <collision>
-                <origin xyz="0.015 0 -0.0065" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
                     <cylinder length="0.0315" radius="0.055"/>
                 </geometry>
@@ -87,7 +94,7 @@
                 ixx="0.001" 
                 ixy="0.0" 
                 ixz="0.0" 
-                iyy="0.001" 
+                iyy="0.001"
                 iyz="0.0" 
                 izz="0.001"/>
             </inertial>
@@ -126,15 +133,14 @@
             </inertial>
         </link>
 
-    <gazebo reference="${name}">
-        <mu1 value="0.2"/>
-        <mu2 value="1.5"/>
-        <kp value="10000000.0" />
-        <kd value="10000.0" />
-        <fdir1 value="0 0 1"/>
-        <maxContacts value= "1"/>
-    </gazebo>
-
+        <gazebo reference="${name}">
+            <mu1 value="0.2"/>
+            <mu2 value="1.5"/>
+            <kp value="10000000.0" />
+            <kd value="10000.0" />
+            <fdir1 value="0 0 1"/>
+            <maxContacts value= "1"/>
+        </gazebo>
     </xacro:macro>
 
     <xacro:wheel_link name="wheel_a"/>
@@ -142,7 +148,86 @@
     <xacro:wheel_link name="wheel_c"/>
     <xacro:wheel_link name="wheel_d"/>
 
-    <!-- joints -->
+    <!-- Camera Xacro -->
+    <xacro:macro name='usb_cam' params='camera_name xyz rpy'>
+
+        <link name='${camera_name}_link'>
+            <visual>
+                <geometry>
+                    <box size='0.02 0.02 0.02'/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <box size='0.02 0.02 0.02'/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.01"/>
+                <inertia
+                    ixx="0.000001"
+                    ixy="0.0"
+                    ixz="0.0"
+                    iyy="0.000001"
+                    iyz="0.0"
+                    izz="0.000001"/>
+            </inertial>
+        </link>
+
+        <joint name="${camera_name}_joint" type="fixed">
+            <parent link="base_link"/>
+            <child link="${camera_name}_link"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/> 
+        </joint>
+
+        <link name="${camera_name}_link_optical"/>
+
+        <joint name="${camera_name}_optical_joint" type="fixed">
+            <parent link="${camera_name}_link"/>
+            <child link="${camera_name}_link_optical"/>
+            <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+        </joint>
+
+        <gazebo reference='${camera_name}_link'>
+            <sensor name='${camera_name}_sensor' type="camera">
+                <pose>0 0 0 0 0 0</pose>
+                <camera>
+                    <horizontal_fov>1.26</horizontal_fov>
+                    <image>
+                        <width>1920</width>
+                        <height>1200</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.001</near>
+                        <far>20</far>
+                    </clip> 
+                </camera>
+                <always_on>true</always_on>
+                <update_rate>10</update_rate> <!-- i think our cameras run at 90fps max, but for sim, even 30 kills it. maybe 10 will be better? -->
+                <visualize>true</visualize>
+                <topic>/${camera_name}/image_raw</topic>
+                <gz_frame_id>${camera_name}_link_optical</gz_frame_id>
+            </sensor> 
+        </gazebo>
+    </xacro:macro> 
+
+    <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
+    <xacro:usb_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${pi/4}'/> 
+    
+    <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
         <origin xyz="0 0 0.025" rpy="0 0 0"/>
         <parent link='base_footprint'/>
@@ -156,7 +241,7 @@
         <axis xyz="0 1 0"/> 
     </joint>
 
-    <joint name="chassis_to_wheel_b" type="continuous">
+    <joint name="chassis_to_wheel_b" type="continuous"> 
         <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${-3* (pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_b"/>
@@ -185,10 +270,10 @@
     </joint>
 
     <joint name="laser_joint" type="fixed">
-         <parent link="base_link"/>
-         <child link="laser_frame"/>
-        <origin xyz="0 0 0.2" rpy="0 0 0"/>
-      </joint>
+        <parent link="base_link"/>
+        <child link="laser_frame"/>
+        <origin xyz="0 0 0.1" rpy="0 0 0"/> 
+    </joint>
 
     <!-- ROS 2 Control-->
     <ros2_control name="GazeboSystem" type="system">
@@ -196,25 +281,25 @@
             <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
         <joint name="chassis_to_wheel_a">
-               <command_interface name="velocity"/>
+            <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
         <joint name="chassis_to_wheel_b">
-               <command_interface name="velocity"/>
+            <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
         <joint name="chassis_to_wheel_c">
-               <command_interface name="velocity"/>
+            <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
         <joint name="chassis_to_wheel_d">
-               <command_interface name="velocity"/>
+            <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
-         </joint>
+        </joint>
     </ros2_control>
 
     <!-- Gazebo Sim Plugins -->
@@ -256,4 +341,12 @@
         </sensor>
     </gazebo>
 
+<!-- This might cause problems later...
+
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam1_sensor"]/gz_frame_id:<data-string>:L207]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam2_sensor"]/gz_frame_id:<data-string>:L227]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam3_sensor"]/gz_frame_id:<data-string>:L247]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam4_sensor"]/gz_frame_id:<data-string>:L267]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="lidar"]/gz_frame_id:<data-string>:L295]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+-->
 </robot>

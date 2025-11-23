@@ -6,6 +6,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, TimerAction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from ros_gz_bridge.actions import RosGzBridge
 import xacro
 
 def generate_launch_description():
@@ -51,7 +52,7 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/clock@rosgraph_msgs/msg/Clock@gz.msgs.Clock',
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',  # make sure this is a [ not an @
         ],
         parameters=[{'use_sim_time': True}],
         output='screen'
@@ -65,7 +66,7 @@ def generate_launch_description():
         ],
         parameters=[{'use_sim_time': True}],
         output='screen'
-    )    
+    )   
     
     sensor_msg_bridge = Node(
         package='ros_gz_bridge',
@@ -92,13 +93,40 @@ def generate_launch_description():
         output='screen'
     )    
 
-    start_gazebo_ros_image_bridge_cmd = Node(
-        package='ros_gz_image',
-        executable='image_bridge',
-        arguments=['/camera/image_raw'],
+    image_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/cam1/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam1/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/cam2/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam2/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/cam3/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam3/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/cam4/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/cam4/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo'
+        ],
         parameters=[{'use_sim_time': True}],
         output='screen'
     )
+
+    # bridge_name = LaunchConfiguration('bridge_name')
+    # config_file = LaunchConfiguration('config_file')
+
+    # declare_bridge_name_cmd = DeclareLaunchArgument(
+    #     'bridge_name', description='Name of ros_gz_bridge node'
+    # )
+
+    # declare_config_file_cmd = DeclareLaunchArgument(
+    #     'config_file', description='YAML config file'
+    # )
+
+    # # Create the launch description and populate
+
+    # gazebo_bridge = RosGzBridge(
+    #     bridge_name=LaunchConfiguration('bridge_name'),
+    #     config_file=LaunchConfiguration('config_file'),
+    # )
 
     ## ============= Gazebo Sim ============== ##
     start_gazebo_ros_spawner_cmd = Node(
@@ -111,7 +139,9 @@ def generate_launch_description():
             '-y', y_pose,
             '-z', '0.01'
         ],
-        output='screen'
+        parameters=[{'use_sim_time': True}],
+        output='screen',
+
     )
 
     ## ============= Controller Managers ============== ##
@@ -155,7 +185,7 @@ def generate_launch_description():
         tf_bridge,
         tf_st_bridge,
         sensor_msg_bridge,
-        start_gazebo_ros_image_bridge_cmd,
+        image_bridge,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])
