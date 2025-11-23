@@ -340,4 +340,13 @@
             </lidar>
         </sensor>
     </gazebo>
+
+<!-- This might cause problems later...
+
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam1_sensor"]/gz_frame_id:<data-string>:L207]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam2_sensor"]/gz_frame_id:<data-string>:L227]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam3_sensor"]/gz_frame_id:<data-string>:L247]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="cam4_sensor"]/gz_frame_id:<data-string>:L267]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] Warning [Utils.cc:132] [/sdf/model[@name="x_drive"]/link[@name="base_footprint"]/sensor[@name="lidar"]/gz_frame_id:<data-string>:L295]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+-->
 </robot>
