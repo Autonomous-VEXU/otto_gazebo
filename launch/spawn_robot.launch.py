@@ -95,14 +95,7 @@ def generate_launch_description():
             ],
             output='screen'
     )
-    ''' 
-    gzserver_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(ros_gz_sim, 'launch', 'gz_sim.launch.py')
-        ),
-        launch_arguments={'gz_args': ['-r -s -v2 ', world], 'on_exit_shutdown': 'true', 'use_sim_time': 'true'}.items()
-    )
-    '''
+
     scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
     scan_merger = IncludeLaunchDescription(
