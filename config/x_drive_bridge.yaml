@@ -13,18 +13,11 @@
   direction: GZ_TO_ROS
 
 # gz topic published by OmniWheelDrive plugin
-- ros_topic_name: "odom"
-  gz_topic_name: "odom"
-  ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.Odometry"
-  direction: GZ_TO_ROS
-
-# gz topic published by OmniWheelDrive plugin
 - ros_topic_name: "tf"
   gz_topic_name: "tf"
   ros_type_name: "tf2_msgs/msg/TFMessage"
   gz_type_name: "gz.msgs.Pose_V"
-  direction: GZ_TO_ROS
+  direction: BIDIRECTIONAL
 
 # gz topic subscribed to by OmniWheelDrive plugin
 - ros_topic_name: "cmd_vel"
@@ -34,18 +27,32 @@
   direction: ROS_TO_GZ
 
 # gz topic published by IMU plugin
-# - ros_topic_name: "imu"
-#   gz_topic_name: "imu"
-#   ros_type_name: "sensor_msgs/msg/Imu"
-#   gz_type_name: "gz.msgs.IMU"
-#   direction: GZ_TO_ROS
+- ros_topic_name: "imu"
+  gz_topic_name: "imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
 
-# gz topic published by Sensors plugin (2D Lidar)
-- ros_topic_name: "scan"
-  gz_topic_name: "scan"
+# LiDAR #1
+- ros_topic_name: "scan_1"
+  gz_topic_name: "scan_1"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
+
+#  LiDAR #2
+- ros_topic_name: "scan_2"
+  gz_topic_name: "scan_2"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# # Merged LiDAR scan
+# - ros_topic_name: "scan_3"
+#   gz_topic_name: "scan_3"
+#   ros_type_name: "sensor_msgs/msg/LaserScan"
+#   gz_type_name: "gz.msgs.LaserScan"
+#   direction: ROS_TO_GZ
 
 ## ----------- Camera 1 ----------- ##
 
@@ -102,18 +109,3 @@
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
-
-
-# previous launch file format: /TOPIC@ROS_MSG@GZ_MSG
-
-# TEMPLATE bridge
-#      - ros_topic_name: ""
-#        gz_topic_name: ""
-#        ros_type_name: ""
-#        gz_type_name: ""
-#        direction: GZ_TO_ROS or BIDIRECTIONAL
-
-# the symbol after ROS_MSG
-# @ is a bidirectional bridge.
-# [ is a bridge from Gazebo to ROS.
-# ] is a bridge from ROS to Gazebo.

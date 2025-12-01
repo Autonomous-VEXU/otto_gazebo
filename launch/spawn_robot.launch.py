@@ -3,7 +3,8 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, TimerAction
+from launch.actions import DeclareLaunchArgument, TimerAction, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ros_gz_bridge.actions import RosGzBridge
@@ -19,6 +20,10 @@ def generate_launch_description():
     )
 
     urdf = xacro.process_file(urdf_path).toxml()
+
+    topic_bridge_config = os.path.join(
+        get_package_share_directory('robot_gazebo'),'config','x_drive_bridge.yaml'
+    )
     
     ## ============= X and Y Spawn Position ============== ##
     declare_x_position_cmd = DeclareLaunchArgument(
@@ -48,35 +53,20 @@ def generate_launch_description():
     ) 
 
     ## ============= Gazebo <--> ROS Bridge ============== ##
-    clock_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',  # make sure this is a [ not an @
-        ],
-        parameters=[{'use_sim_time': True}],
-        output='screen'
+   
+    declare_bridge_name_cmd = DeclareLaunchArgument(
+        'bridge_name', default_value="ros_bridge", description='Name of ros_gz_bridge node'
     )
 
-    tf_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V'
-        ],
-        parameters=[{'use_sim_time': True}],
-        output='screen'
-    )   
-    
-    sensor_msg_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
-        ],
-        parameters=[{'use_sim_time': True}],
-        output='screen'
+    declare_config_file_cmd = DeclareLaunchArgument(
+        'config_file', default_value=topic_bridge_config, description='YAML config file'
     )
+
+    gazebo_bridge = RosGzBridge(
+        bridge_name=LaunchConfiguration('bridge_name'),
+        config_file=LaunchConfiguration('config_file'),
+    )
+
 
     tf_st_bridge = Node(
         package='ros_gz_bridge',
@@ -93,40 +83,27 @@ def generate_launch_description():
         output='screen'
     )    
 
-    image_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/cam1/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
-            '/cam1/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
-            '/cam2/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
-            '/cam2/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
-            '/cam3/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
-            '/cam3/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
-            '/cam4/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
-            '/cam4/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo'
-        ],
-        parameters=[{'use_sim_time': True}],
-        output='screen'
+    ## ============= LiDAR Specific ============== ##
+    lidar_scan_toggle = Node(
+            package='topic_tools',
+            executable='mux',
+            name='mux_laser_scan', 
+            arguments=[
+                'scan',
+                'scan_1',
+                'scan_2'
+            ],
+            output='screen'
     )
 
-    # bridge_name = LaunchConfiguration('bridge_name')
-    # config_file = LaunchConfiguration('config_file')
+    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
-    # declare_bridge_name_cmd = DeclareLaunchArgument(
-    #     'bridge_name', description='Name of ros_gz_bridge node'
-    # )
-
-    # declare_config_file_cmd = DeclareLaunchArgument(
-    #     'config_file', description='YAML config file'
-    # )
-
-    # # Create the launch description and populate
-
-    # gazebo_bridge = RosGzBridge(
-    #     bridge_name=LaunchConfiguration('bridge_name'),
-    #     config_file=LaunchConfiguration('config_file'),
-    # )
+    scan_merger = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
+        ),
+        launch_arguments={'robotname':'x_drive'}.items()
+    )
 
     ## ============= Gazebo Sim ============== ##
     start_gazebo_ros_spawner_cmd = Node(
@@ -140,8 +117,7 @@ def generate_launch_description():
             '-z', '0.01'
         ],
         parameters=[{'use_sim_time': True}],
-        output='screen',
-
+        output='screen'
     )
 
     ## ============= Controller Managers ============== ##
@@ -179,13 +155,14 @@ def generate_launch_description():
     return LaunchDescription([
         declare_x_position_cmd,
         declare_y_position_cmd,
-        clock_bridge,
+        declare_config_file_cmd,
+        declare_bridge_name_cmd,
+        gazebo_bridge,
+        tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
-        tf_bridge,
-        tf_st_bridge,
-        sensor_msg_bridge,
-        image_bridge,
+        lidar_scan_toggle,
+        # scan_merger,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])
