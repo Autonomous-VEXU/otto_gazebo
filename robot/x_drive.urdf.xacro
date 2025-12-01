@@ -24,11 +24,6 @@
     <!--base_link link-->
     <link name="base_link">
         <visual>
-            <!--
-            <geometry>
-                <mesh filename='${model_path}/chassis-v2.dae'/>
-            </geometry>
-            -->
             <origin xyz="0 0 0.05" rpy="0 0 0"/>
 
             <geometry>  
@@ -41,11 +36,6 @@
         </visual>
 
         <collision>
-            <!--
-            <geometry>
-                <mesh filename='${model_path}/chassis.dae'/>
-            </geometry>
-            -->
             <origin xyz="0 0 0.05" rpy="0 0 0"/>
             <geometry>
                  <box size='0.20 0.20 0.02'/>
@@ -269,8 +259,8 @@
         </gazebo>
     </xacro:macro>
 
-    <xacro:TiMXXS_lidar sensor_number='1' xyz="0.13 0.12 0.14" yaw='-${pi/4}'/>
-    <xacro:TiMXXS_lidar sensor_number='2' xyz="-0.13 0.12 0.14" yaw='${pi/4}'/> 
+    <xacro:TiMXXS_lidar sensor_number='1' xyz="-0.13 0.12 0.14" yaw='${3* pi/4}'/>
+    <xacro:TiMXXS_lidar sensor_number='2' xyz="-0.13 -0.12 0.14" yaw='-${ 3* pi/4}'/> 
     
     <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
