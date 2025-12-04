@@ -28,13 +28,13 @@ def generate_launch_description():
     ## ============= X and Y Spawn Position ============== ##
     declare_x_position_cmd = DeclareLaunchArgument(
         'x_pose', 
-        default_value='0.0',
+        default_value='0.5',
         description='X position of the robot'
     )
 
     declare_y_position_cmd = DeclareLaunchArgument(
         'y_pose', 
-        default_value='2.0',
+        default_value='1.0',
         description='Y position of the robot'
     ) 
 
