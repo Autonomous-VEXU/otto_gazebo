@@ -208,7 +208,7 @@
     </xacro:macro>
 
     <xacro:TiMXXS_lidar sensor_number='1' xyz="-0.13 0.12 0.14" yaw='${1* pi/4}'/>
-    <xacro:TiMXXS_lidar sensor_number='2' xyz="-0.13 -0.12 0.14" yaw='-${1* pi/4}'/> 
+    <xacro:TiMXXS_lidar sensor_number='2' xyz="-0.13 -0.12 0.14" yaw='${3* pi/4}'/> 
     
     <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
