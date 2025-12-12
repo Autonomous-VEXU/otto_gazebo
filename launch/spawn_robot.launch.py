@@ -19,22 +19,28 @@ def generate_launch_description():
         'x_drive.urdf.xacro'
     )
 
-    urdf = xacro.process_file(urdf_path).toxml()
+    no_cams_urdf =  os.path.join(
+        get_package_share_directory('robot_gazebo'),
+        'robot',
+        'robot_lite.urdf.xacro'
+    )
+    
+    urdf = xacro.process_file(no_cams_urdf).toxml()
 
     topic_bridge_config = os.path.join(
-        get_package_share_directory('robot_gazebo'),'config','x_drive_bridge.yaml'
+        get_package_share_directory('robot_gazebo'),'config','robot_lite_bridge.yaml'
     )
     
     ## ============= X and Y Spawn Position ============== ##
     declare_x_position_cmd = DeclareLaunchArgument(
         'x_pose', 
-        default_value='0.0',
+        default_value='0.5',
         description='X position of the robot'
     )
 
     declare_y_position_cmd = DeclareLaunchArgument(
         'y_pose', 
-        default_value='2.0',
+        default_value='1.0',
         description='Y position of the robot'
     ) 
 
