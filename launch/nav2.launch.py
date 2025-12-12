@@ -32,7 +32,7 @@ def generate_launch_description():
             'nav2.yaml')
     )
     
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     
     ## ============= Launch Arguments ============== ##
     map_launch_arg = DeclareLaunchArgument(
