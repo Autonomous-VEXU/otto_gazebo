@@ -14,12 +14,16 @@ def generate_launch_description():
     pkg_directory = get_package_share_directory('robot_gazebo')
 
     map_file = LaunchConfiguration( 'map', default=os.path.join( 
-            get_package_share_directory('turtlebot3_navigation2'),
-            'map',
-            'map.yaml')
+        pkg_directory,
+        'maps',
+        'vex_field_map.yaml')
     )
 
-    param_file = LaunchConfiguration('params_file', default=os.path.join( pkg_directory, 'config', 'amcl.yaml'))
+    turtlebot_map_file = os.path.join( get_package_share_directory('turtlebot3_navigation2'),'map', 'map.yaml')
+
+    param_file = LaunchConfiguration('params_file', default=os.path.join(pkg_directory, 'config', 'amcl.yaml'))
+
+    rviz_config = LaunchConfiguration('rviz_config', default=os.path.join(pkg_directory, 'rviz', 'amcl_test.rviz'))
 
     robot = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -51,8 +55,8 @@ def generate_launch_description():
         name='lifecycle_manager_localization',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time,
-                    'autostart': True,
-                    'node_names': ['map_server', 'amcl']}]
+            'autostart': True,
+            'node_names': ['map_server', 'amcl']}]
     )
 
     rviz2 = Node(
@@ -60,6 +64,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         parameters=[{'use_sim_time': use_sim_time}],
+        arguments=['-d', rviz_config],
         output='screen'
     )
 
@@ -70,13 +75,23 @@ def generate_launch_description():
         output='screen'
     )
 
+    robot_localization = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[os.path.join(get_package_share_directory("robot_localization"), 'params', 'ekf.yaml')],
+    )
+
     localize_timer = TimerAction(
         period=4.0,
         actions=[localize]
     )
 
+    # ground truth gz --> ros bridge
+    
     return LaunchDescription([
-        robot,
+        # robot,
         map_server,
         amcl,
         lifecycle_manager,

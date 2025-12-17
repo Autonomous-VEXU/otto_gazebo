@@ -86,9 +86,18 @@
         </inertial>
     </link>
 
-
     <!--imu link-->
     <link name="imu_link"/>
+
+    <!-- IMU -->
+    <gazebo reference='imu_link'>
+       <sensor name="imu_sensor" type="imu">
+            <always_on>1</always_on>
+            <update_rate>1</update_rate>
+            <visualize>true</visualize>
+            <topic>imu</topic>
+        </sensor>
+    </gazebo>
 
     <!-- wheels -->
     <xacro:macro name="wheel_link" params="name">

@@ -5,19 +5,24 @@ import subprocess
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TwistStamped, PoseWithCovarianceStamped
+from std_msgs.msg import Float64
 
 class Localize(Node):
     def __init__(self):
         super().__init__("localize")
 
+        self.log = self.get_logger().info
+
         # publishers and subscribers
         self.cmd_vel = self.create_publisher(TwistStamped, '/cmd_vel', 10)
         self.amcl_pose = self.create_subscription(PoseWithCovarianceStamped, '/amcl_pose', self.calc_covariance, 10)
 
-        self.timer = self.create_timer(3.0, self.robot_actions)
+        # self.average_cov = self.create_publisher(Float64, '/avg_covariance')
+
+        # self.timer = self.create_timer(3.0, self.robot_actions)
 
         self.localized = False
-        self.avg_covariance = None
+        # self.avg_covariance = None
         self.est_pose = None
 
         # initial service call to start localizing
@@ -32,8 +37,9 @@ class Localize(Node):
             if value > 0.0:
                 vals.append(value)
         
-        self.avg_covariance = sum(vals) / len(vals)
+        avg_covariance = sum(vals) / len(vals)
         self.est_pose = amcl.pose.pose.position
+        self.log(f"Average Covariance: {avg_covariance}")
 
     def publish_spin(self, spin_speed:float):
         '''controls the speed of the robot spinning'''
@@ -46,12 +52,12 @@ class Localize(Node):
         subprocess.run(['ros2', 'service', 'call', '/reinitialize_global_localization', 'std_srvs/srv/Empty','"{}"'])
 
     def nomotion_update(self):
-        '''call nomotion_update service on a timer'''
+        '''call nomotion_update service on a timer?'''
         subprocess.run(['ros2', 'service', 'call', '/request_nomotion_update', 'std_srvs/srv/Empty','"{}"'])
         
     def robot_actions(self):
         self.publish_spin(0.5)
-        self.get_logger().info(f'Average Covariance: {self.avg_covariance}')
+        # self.get_logger().info(f'Average Covariance: {avg_covariance}')
 
 
 def main(args=None):
