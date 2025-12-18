@@ -20,7 +20,7 @@ def generate_launch_description():
 
     ## ============= Config ============== ##
     config_path = PathJoinSubstitution([
-        FindPackageShare('robot_gazebo'),
+        FindPackageShare('otto_gazebo'),
         'config',
         controller_name]
     )

@@ -11,7 +11,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    pkg_directory = get_package_share_directory('robot_gazebo')
+    pkg_directory = get_package_share_directory('otto_gazebo')
 
     map_file = LaunchConfiguration( 'map', default=os.path.join( 
         pkg_directory,
@@ -69,7 +69,7 @@ def generate_launch_description():
     )
 
     localize = Node(
-        package='robot_gazebo',
+        package='otto_gazebo',
         executable='localize.py',
         name='localize',
         output='screen'

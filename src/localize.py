@@ -3,9 +3,7 @@
 import rclpy
 import subprocess
 from rclpy.node import Node
-from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TwistStamped, PoseWithCovarianceStamped
-from std_msgs.msg import Float64
 
 class Localize(Node):
     def __init__(self):
