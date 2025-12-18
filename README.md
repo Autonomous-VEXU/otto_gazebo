@@ -1,17 +1,32 @@
 # otto_gazebo
-This package simulates a x-drive robot using Gazebo Harmonic + ROS2 Jazzy Jalisco. Also contains configuration files for tele-op controllers, the omni wheel drive controller, AMCL launch + parameter file, and Navigation2 parameters. Works together with the `otto_bringup` and `otto_description` packages, which can be found in the [`Autonomous-VEXU/vex_robot`](https://github.com/Autonomous-VEXU/vex_robot) repository.
+This package simulates a x-drive robot using Gazebo Harmonic + ROS2 Jazzy Jalisco. Also contains configuration files for tele-op controllers, the omni wheel drive controller, AMCL launch + parameter file, and Navigation2 parameters. Works together with the `otto_bringup` and `otto_description` packages, which can be found in the [`Autonomous-VEXU/otto_bringup`](https://github.com/Autonomous-VEXU/otto_bringup) and [`Autonomous-VEXU/otto_description`](https://github.com/Autonomous-VEXU/otto_description) repositories.
 
 ### Table of Contents:
+- [ROS Package Dependencies](#ros-package-dependencies)
 - [Demo Instructions](#demo-instructions)
 - [File Organization](#file-structure--organization)
 - [Launch Files](#launch-files)
     - [`controller.launch.py`](#controllerlaunchpy)
     - [`nav2_test_world.launch.py`](#nav2_test_worldlaunchpy)
-    - [`nav2.launch.py`](#nav_2launchpy)
+    - [`nav2.launch.py`](#nav2launchpy)
     - [`spawn_robot.launch.py`](#spawn_robotlaunchpy)
-    - [`localization.launch.py`]()
-- Nodes
+    - [`localization.launch.py`](#localizationlaunchpy)
+- [Nodes](#nodes)
+    - [`localize.py`](#localizepy)
 - [Resources + Docs](#resources--documentation)
+
+## ROS Package Dependencies
+- joy
+- teleop_twist_joy
+- turtlebot3_navigation2
+- nav2_bringup
+- turtlebot3_gazebo
+- ros_gz_sim
+- ros_gz_bridge
+- otto_bringup
+- otto_description
+- robot_state_publisher
+- controller_manager
 
 ## Demo Instructions
 Example of things that can be done with the launch files in this package:
@@ -36,6 +51,7 @@ Terminal 2: `ros2 launch otto_gazebo localization.launch.py`</br>
 ```
 otto_gazebo/
 ├── config/
+│   ├── amcl.yaml
 │   ├── nav2.yaml
 │   ├── omni_wheel_params.yaml
 │   ├── x_drive_bridge.yaml
@@ -74,12 +90,10 @@ controller_name: 'xbox_controller.yaml' # name of the config file you want to us
 joy_dev: 0 # Device and/or controller ID
 publish_twist_stamped: true # Toggle for publishing Twist vs TwistStamped messages
 ```
-> Referenced Packages: `teleop_twist_joy`, `joy`
 
 ## nav2_test_world.launch.py
-_Launches the demo world from the `turtlebot3_gazebo` package. </br>_
+_Launches the demo world from the `turtlebot3_gazebo` package with Otto spawned in at x = 0.5, y = 0.5. </br>_
 \*\* There are no launch arguments for this launch file!
-> Referenced Packages: `turtlebot3_gazebo`, `ros_gz_sim`
 
 ## nav2.launch.py
 _Launches the main bringup node + Rviz for Navigation 2._
@@ -88,7 +102,6 @@ map: `package://turtlebot3_navigation2/map/map.yaml' # map file path for the wor
 params_file: `package://otto_gazebo/config/nav2.yaml' # params file that should be used
 use_sim_time: true # toggle for using sim time (gz sim /clock) or not
 ```
-> Referenced Packages: `turtlebot3_navigation2`, `nav2_bringup`
 
 ## spawn_robot.launch.py
 _Spawns the robot into a pre-existing Gazebo Sim session</br>_
@@ -96,14 +109,19 @@ _Spawns the robot into a pre-existing Gazebo Sim session</br>_
 x_pose: 0 # x coordinate will the robot will spawn
 y_pose: 0 # y coordinate will the robot will spawn
 ```
-> Referenced Packages: `robot_description`, `robot_state_publisher`,`ros_gz_bridge`,`ros_gz_sim`,`controller_manager`
 
 ## localization.launch.py
 _Starts AMCL + map server components of Nav2, also launches localize.py node to make the robot spin in place_
+\*\* There are no launch arguments for this launch file!
 
+## Nodes
+A few helper nodes that make testing more efficient.
+## localize.py
+_A python node that simply spins the robot in place, calls the two main AMCL services `/request_nomotion_update` and `/reinitalize_global_localization`, while publishing the average covariance from topic `/amcl_pose` in a more readable format_
+> this node can be found in the `localization.launch.py` launch file
 
 ## Resources + Documentation:
-Various links to docs that I thouhgt were useful. YouTube is also a pretty good resource as there are a lot of robotics channels that cover ROS2 concepts and have Gazebo Sim tutorials.
+Various links to docs that I thought were useful. YouTube is also a pretty good resource as there are a lot of robotics channels that cover ROS2 concepts and have Gazebo Sim tutorials.
 ### ROS2 Documentation + Resources:
 [ROS2 Documentation (Jazzy Jalisco)](https://docs.ros.org/en/jazzy/index.html)</br>
 [Open Robotics Discourse](https://discourse.openrobotics.org)</br>
