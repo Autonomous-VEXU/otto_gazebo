@@ -167,8 +167,8 @@ def generate_launch_description():
         tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
-        lidar_scan_toggle,
-        # scan_merger,
+        # lidar_scan_toggle,
+        scan_merger,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])

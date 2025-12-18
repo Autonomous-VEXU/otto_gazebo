@@ -12,8 +12,13 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-    DIRECTORY launch config robot
-    DESTINATION share/${PROJECT_NAME}
+  DIRECTORY launch config robot rviz maps
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  src/localize.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

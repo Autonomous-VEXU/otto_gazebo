@@ -14,7 +14,6 @@ def generate_launch_description():
     ## ============= Launch Configs ============== ##
     nav2_launch_file_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
     rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_navigation2'),'rviz','tb3_navigation2.rviz')
-    param_file_name = 'nav2.yaml'
 
     map_dir = LaunchConfiguration(
         'map',
@@ -32,7 +31,7 @@ def generate_launch_description():
             'nav2.yaml')
     )
     
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     
     ## ============= Launch Arguments ============== ##
     map_launch_arg = DeclareLaunchArgument(
