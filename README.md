@@ -1,5 +1,5 @@
-# robot_gazebo
-This package simulates a x-drive robot using Gazebo Harmonic + ROS2 Jazzy Jalisco. Also contains configuration files for tele-op controllers, the omni wheel drive controller, AMCL launch + parameter file, and Navigation2 parameters. Works together with the `robot_bringup` and `robot_description` packages, which can be found in the [`Autonomous-VEXU/vex_robot`](https://github.com/Autonomous-VEXU/vex_robot) repository.
+# otto_gazebo
+This package simulates a x-drive robot using Gazebo Harmonic + ROS2 Jazzy Jalisco. Also contains configuration files for tele-op controllers, the omni wheel drive controller, AMCL launch + parameter file, and Navigation2 parameters. Works together with the `otto_bringup` and `otto_description` packages, which can be found in the [`Autonomous-VEXU/vex_robot`](https://github.com/Autonomous-VEXU/vex_robot) repository.
 
 ### Table of Contents:
 - [Demo Instructions](#demo-instructions)
@@ -13,30 +13,20 @@ This package simulates a x-drive robot using Gazebo Harmonic + ROS2 Jazzy Jalisc
 - Nodes
 - [Resources + Docs](#resources--documentation)
 
-<!-- ## Required Packages
-- ros_gz_sim
-- ros2_control
-- turtlebot3_navigation2
-- teleop_twist_joy
-- robot_description * 
-- robot_bringup *
-
-> \* = package located in the `Autonomous-VEXU/vex_robot` repository -->
-
 ## Demo Instructions
 Example of things that can be done with the launch files in this package:
 ### **Nav2 in the base turtlebot3_world:** </br>
-Terminal 1: `ros2 launch robot_gazebo nav2_test_world.launch.py`</br>
-Terminal 2: `ros2 launch robot_gazebo nav2.launch.py`</br>
+Terminal 1: `ros2 launch otto_gazebo nav2_test_world.launch.py`</br>
+Terminal 2: `ros2 launch otto_gazebo nav2.launch.py`</br>
 
 ### **Tele-op Control:**</br>
-Terminal 1: `ros2 launch robot_gazebo nav2_test_world.launch.py`</br>
-Terminal 2: `ros2 launch robot_gazebo spawn_robot.launch.py`</br>
-Terminal 3: `ros2 launch robot_gazebo controller.launch.py`</br>
+Terminal 1: `ros2 launch otto_gazebo nav2_test_world.launch.py`</br>
+Terminal 2: `ros2 launch otto_gazebo spawn_robot.launch.py`</br>
+Terminal 3: `ros2 launch otto_gazebo controller.launch.py`</br>
 
 ### **Localizing with AMCL on the VEX field:** </br>
 Terminal 1: `ros2 launch pushback_sim world_select.launch.py world:=<world_name>`</br>
-Terminal 2: `ros2 launch robot_gazebo localization.launch.py`</br>
+Terminal 2: `ros2 launch otto_gazebo localization.launch.py`</br>
 
 > **Note:** Do not forget to build the workspace by running `colcon build --symlink-install` and then `source install/setup.bash` inside of the workspace directory</br>
 
@@ -44,7 +34,7 @@ Terminal 2: `ros2 launch robot_gazebo localization.launch.py`</br>
 
 ## File Structure + Organization:
 ```
-robot_gazebo/
+otto_gazebo/
 ├── config/
 │   ├── nav2.yaml
 │   ├── omni_wheel_params.yaml
@@ -59,8 +49,8 @@ robot_gazebo/
 │   ├── vex_field.launch.py
 │   └── spawn_robot.launch.py
 ├── robot/
-│   ├── robot_lite.urdf.xacro
-│   └── x_drive.urdf.xacro
+│   ├── otto_lite.urdf.xacro
+│   └── otto.urdf.xacro
 ├── rviz/
 │   └── amcl_test.rviz
 ├── src/
@@ -95,7 +85,7 @@ _Launches the demo world from the `turtlebot3_gazebo` package. </br>_
 _Launches the main bringup node + Rviz for Navigation 2._
 ```yaml
 map: `package://turtlebot3_navigation2/map/map.yaml' # map file path for the world that is being used
-params_file: `package://robot_gazebo/config/nav2.yaml' # params file that should be used
+params_file: `package://otto_gazebo/config/nav2.yaml' # params file that should be used
 use_sim_time: true # toggle for using sim time (gz sim /clock) or not
 ```
 > Referenced Packages: `turtlebot3_navigation2`, `nav2_bringup`

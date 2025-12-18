@@ -12,7 +12,7 @@ def generate_launch_description():
 
     ## ============= File + Directory Paths ============== ##
     ros_gz_sim = get_package_share_directory('ros_gz_sim')
-    sim_robot_dir = get_package_share_directory('robot_gazebo')
+    sim_robot_dir = get_package_share_directory('otto_gazebo')
 
     world = os.path.join(
         get_package_share_directory('turtlebot3_gazebo'),

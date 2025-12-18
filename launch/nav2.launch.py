@@ -26,7 +26,7 @@ def generate_launch_description():
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
-            get_package_share_directory('robot_gazebo'),
+            get_package_share_directory('otto_gazebo'),
             'config',
             'nav2.yaml')
     )

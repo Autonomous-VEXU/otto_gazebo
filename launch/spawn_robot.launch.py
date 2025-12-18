@@ -14,21 +14,21 @@ def generate_launch_description():
    
     ## ============= URDF Path + Conversion ============== ##
     urdf_path = os.path.join(
-        get_package_share_directory('robot_gazebo'),
+        get_package_share_directory('otto_gazebo'),
         'robot',
-        'x_drive.urdf.xacro'
+        'otto.urdf.xacro'
     )
 
     no_cams_urdf =  os.path.join(
-        get_package_share_directory('robot_gazebo'),
+        get_package_share_directory('otto_gazebo'),
         'robot',
-        'robot_lite.urdf.xacro'
+        'otto_lite.urdf.xacro'
     )
     
     urdf = xacro.process_file(no_cams_urdf).toxml()
 
     topic_bridge_config = os.path.join(
-        get_package_share_directory('robot_gazebo'),'config','robot_lite_bridge.yaml'
+        get_package_share_directory('otto_gazebo'),'config','robot_lite_bridge.yaml'
     )
     
     ## ============= X and Y Spawn Position ============== ##

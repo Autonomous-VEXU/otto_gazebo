@@ -1,16 +1,22 @@
 <?xml version='1.0'?>
-<robot name="x_drive_lite" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
+<robot name="Otto" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
 
     <static>false</static>
 
     <!-- properties-->
     <xacro:property name="model_path" value="package://robot_description/models"/>
-    <xacro:property name="package_path" value="package://robot_gazebo/config"/>
+    <xacro:property name="package_path" value="package://otto_gazebo/config"/>
 
     <!--Wheel properties-->
     <xacro:property name="wheel_offs" value="0.14"/>
     <xacro:property name="wheel_rad" value="0.0349253"/>
     <xacro:property name="wheel_width" value="0.02159"/>
+
+    <!-- Camera properties-->
+    <xacro:property name="camera_x" value="0.114"/>
+    <xacro:property name="camera_y" value="0.116"/>
+    <xacro:property name="camera_z" value="0.197"/>
+
     
     <!--world link-->
     <link name='base_footprint'/>
@@ -80,7 +86,6 @@
         </inertial>
     </link>
 
-
     <!--imu link-->
     <link name="imu_link"/>
 
@@ -142,6 +147,84 @@
     <xacro:wheel_link name="wheel_c"/>
     <xacro:wheel_link name="wheel_d"/>
 
+    <!-- USB Camera x4 -->
+    <xacro:macro name='usb_cam' params='camera_name xyz rpy'>
+
+        <link name='${camera_name}_link'>
+            <visual>
+                <geometry>
+                    <box size='0.02 0.02 0.02'/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <box size='0.02 0.02 0.02'/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.01"/>
+                <inertia
+                    ixx="0.000001"
+                    ixy="0.0"
+                    ixz="0.0"
+                    iyy="0.000001"
+                    iyz="0.0"
+                    izz="0.000001"/>
+            </inertial>
+        </link>
+
+        <joint name="${camera_name}_joint" type="fixed">
+            <parent link="base_link"/>
+            <child link="${camera_name}_link"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/> 
+        </joint>
+
+        <link name="${camera_name}_link_optical"/>
+
+        <joint name="${camera_name}_optical_joint" type="fixed">
+            <parent link="${camera_name}_link"/>
+            <child link="${camera_name}_link_optical"/>
+            <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+        </joint>
+
+        <gazebo reference='${camera_name}_link'>
+            <sensor name='${camera_name}_sensor' type="camera">
+                <pose>0 0 0 0 0 0</pose>
+                <camera>
+                    <horizontal_fov>1.26</horizontal_fov>
+                    <image>
+                        <width>1920</width>
+                        <height>1200</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.001</near>
+                        <far>20</far>
+                    </clip> 
+                </camera>
+                <always_on>true</always_on>
+                <update_rate>10</update_rate> <!-- i think our cameras run at 90fps max, but for sim, even 30 kills it. maybe 10 will be better? -->
+                <visualize>true</visualize>
+                <topic>/${camera_name}/image_raw</topic>
+                <gz_frame_id>${camera_name}_link_optical</gz_frame_id>
+            </sensor> 
+        </gazebo>
+    </xacro:macro> 
+
+    <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
+    <xacro:usb_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${pi/4}'/> 
 
     <!-- LiDAR x2 -->
     <xacro:macro name='TiMXXS_lidar' params='sensor_number xyz yaw'>
@@ -298,7 +381,7 @@
     <!-- Gazebo Sim Plugins -->
     <gazebo>
           <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-            <parameters>$(find robot_gazebo)/config/omni_wheel_params.yaml</parameters>
+            <parameters>$(find otto_gazebo)/config/omni_wheel_params.yaml</parameters>
           </plugin>
     </gazebo>
 
