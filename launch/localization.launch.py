@@ -69,7 +69,7 @@ def generate_launch_description():
     )
 
     localize = Node(
-        package='robot_gazebo',
+        package='otto_gazebo',
         executable='localize.py',
         name='localize',
         output='screen'

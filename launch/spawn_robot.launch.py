@@ -108,7 +108,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
         ),
-        launch_arguments={'robotname':'x_drive'}.items()
+        launch_arguments={'robotname':'otto'}.items()
     )
 
     ## ============= Gazebo Sim ============== ##
@@ -116,7 +116,7 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         arguments=[
-            '-name', 'vex_robot',
+            '-name', 'Otto',
             '-topic', '/robot_description',
             '-x', x_pose,
             '-y', y_pose,
