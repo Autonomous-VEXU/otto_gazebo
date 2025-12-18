@@ -70,7 +70,7 @@ robot_gazebo/
 ```
 
 ## Launch Files 
-Moderately detialed descriptions about what each launch file does and its arguments plus which outside packages it references/uses. </br>
+Moderately detailed descriptions about what each launch file does and its arguments plus which outside packages it references/uses. </br>
 
 Argument formatting for this `README.md` file:</br>
 ```yaml
@@ -91,12 +91,12 @@ _Launches the demo world from the `turtlebot3_gazebo` package. </br>_
 \*\* There are no launch arguments for this launch file!
 > Referenced Packages: `turtlebot3_gazebo`, `ros_gz_sim`
 
-## nav_2.launch.py
+## nav2.launch.py
 _Launches the main bringup node + Rviz for Navigation 2._
 ```yaml
 map: `package://turtlebot3_navigation2/map/map.yaml' # map file path for the world that is being used
 params_file: `package://robot_gazebo/config/nav2.yaml' # params file that should be used
-use_sim_time: true # toggle for using sim time (gz sim clock) or not
+use_sim_time: true # toggle for using sim time (gz sim /clock) or not
 ```
 > Referenced Packages: `turtlebot3_navigation2`, `nav2_bringup`
 
@@ -107,6 +107,10 @@ x_pose: 0 # x coordinate will the robot will spawn
 y_pose: 0 # y coordinate will the robot will spawn
 ```
 > Referenced Packages: `robot_description`, `robot_state_publisher`,`ros_gz_bridge`,`ros_gz_sim`,`controller_manager`
+
+## localization.launch.py
+_Starts AMCL + map server components of Nav2, also launches localize.py node to make the robot spin in place_
+
 
 ## Resources + Documentation:
 Various links to docs that I thouhgt were useful. YouTube is also a pretty good resource as there are a lot of robotics channels that cover ROS2 concepts and have Gazebo Sim tutorials.
