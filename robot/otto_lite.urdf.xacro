@@ -4,7 +4,7 @@
     <static>false</static>
 
     <!-- properties-->
-    <xacro:property name="model_path" value="package://robot_description/models"/>
+    <xacro:property name="model_path" value="package://otto_description/models"/>
     <xacro:property name="package_path" value="package://otto_gazebo/config"/>
 
     <!--Wheel properties-->
