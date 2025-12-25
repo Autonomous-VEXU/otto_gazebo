@@ -8,24 +8,26 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    ## ============= Launch Args ============== ##
+    # joy device argument
+    joy_dev = LaunchConfiguration('joy_dev')
     joy_dev_arg = DeclareLaunchArgument('joy_dev', default_value='0')
+
+    # stamped twist argument
+    publish_stamped_twist = LaunchConfiguration('publish_stamped_twist')
     stamped_twist_arg = DeclareLaunchArgument('publish_stamped_twist', default_value='true')
+
+    # controller config select argument
+    controller_name = LaunchConfiguration('controller_name')
     controller_name_arg = DeclareLaunchArgument('controller_name', default_value='xbox_controller.yaml')
 
-    ## ============= Launch Configs ============== ##
-    joy_dev = LaunchConfiguration('joy_dev')
-    publish_stamped_twist = LaunchConfiguration('publish_stamped_twist')
-    controller_name = LaunchConfiguration('controller_name')
-
-    ## ============= Config ============== ##
+   # controller configuration file path
     config_path = PathJoinSubstitution([
         FindPackageShare('otto_gazebo'),
         'config',
         controller_name]
     )
 
-    ## ============= Joy + Teleop Nodes ============== ##
+    # tele-op controller nodes
     joy_node = Node(
         package='joy', 
         executable='joy_node', 
