@@ -16,7 +16,7 @@
     <xacro:property name="camera_x" value="0.114"/>
     <xacro:property name="camera_y" value="0.116"/>
     <xacro:property name="camera_z" value="0.197"/>
-
+    <xacro:property name='tilt_angle' value=' 0.122'/> <!--this is the p value in rpy!-->
     
     <!--world link-->
     <link name='base_footprint'/>
@@ -164,9 +164,6 @@
                 <geometry>
                     <box size='0.02 0.02 0.02'/>
                 </geometry>
-                <material name="dark_grey">
-                    <color rgba="0.2 0.2 0.2 1.0"/>
-                </material>
             </collision>
 
             <inertial>
@@ -221,10 +218,10 @@
     </xacro:macro> 
 
     <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
-    <xacro:usb_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${3*pi/4}'/> 
-    <xacro:usb_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${3*pi/4}'/> 
-    <xacro:usb_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 0 ${pi/4}'/> 
-    <xacro:usb_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 0 -${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 ${tilt_angle} ${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 ${tilt_angle} -${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 ${tilt_angle} ${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 ${tilt_angle} -${pi/4}'/> 
 
     <!-- LiDAR x2 -->
     <xacro:macro name='TiMXXS_lidar' params='sensor_number xyz yaw'>
