@@ -31,7 +31,7 @@ def generate_launch_description():
     map_file = LaunchConfiguration('map')
     map_file_cmd = DeclareLaunchArgument( 
         'map', 
-        default=default_map, 
+        default_value=default_map, 
         description='map server map file path'
     )
 
@@ -39,7 +39,7 @@ def generate_launch_description():
     amcl_config = LaunchConfiguration('amcl_config')
     amcl_config_cmd = DeclareLaunchArgument(
         'amcl_config',
-        default=default_amcl_config,
+        default_value=default_amcl_config,
         description='Nav2 amcl config file path'
     )
 
@@ -55,7 +55,7 @@ def generate_launch_description():
     rl_config = LaunchConfiguration('rl_config')
     rl_config_cmd = DeclareLaunchArgument(
         'rl_config',
-        default=default_rl_config,
+        default_value=default_rl_config,
         description='config file path for robot_localization package'
     )
 
