@@ -47,13 +47,6 @@
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
 
-# # Merged LiDAR scan
-# - ros_topic_name: "scan_3"
-#   gz_topic_name: "scan_3"
-#   ros_type_name: "sensor_msgs/msg/LaserScan"
-#   gz_type_name: "gz.msgs.LaserScan"
-#   direction: ROS_TO_GZ
-
 ## ----------- Camera 1 ----------- ##
 
 - ros_topic_name: "cam1/camera_info"
