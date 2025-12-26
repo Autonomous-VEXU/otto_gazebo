@@ -8,7 +8,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression, PathJoinSubstitution, Command
 from launch_ros.actions import Node
 from ros_gz_bridge.actions import RosGzBridge
-import xacro
 
 def generate_launch_description():
 

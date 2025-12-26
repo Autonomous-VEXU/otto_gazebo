@@ -14,7 +14,7 @@ def generate_launch_description():
     map_dir = get_package_share_directory('pushback_sim')
 
     # default file paths
-    default_map = os.path.join(map_dir,'maps', 'vex_field_map.yaml')
+    default_map = os.path.join(map_dir, 'maps', 'vex_field_map.yaml')
     default_amcl_config = os.path.join(pkg_directory, 'config', 'amcl.yaml')
     default_rviz_config = os.path.join(pkg_directory, 'rviz', 'amcl_test.rviz')
     default_rl_config = os.path.join(pkg_directory, 'config', 'robot_ekf.yaml')
