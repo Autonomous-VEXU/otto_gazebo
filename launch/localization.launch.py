@@ -105,7 +105,7 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[os.path.join(get_package_share_directory("robot_localization"), 'params', 'ekf.yaml')],
+        parameters=[rl_config],
     )
     
     return LaunchDescription([

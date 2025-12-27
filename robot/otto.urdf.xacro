@@ -91,12 +91,53 @@
 
     <!-- IMU -->
     <gazebo reference='imu_link'>
-       <sensor name="imu_sensor" type="imu">
-            <always_on>1</always_on>
-            <update_rate>1</update_rate>
-            <visualize>true</visualize>
-            <topic>imu</topic>
-        </sensor>
+        <sensor name="tb3_imu" type="imu"> <!--taken from turtlebot3_simulations-->
+        <always_on>true</always_on>
+        <update_rate>200</update_rate>
+        <topic>imu</topic>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
     </gazebo>
 
     <!-- wheels -->
@@ -278,8 +319,8 @@
                         <horizontal>
                             <samples>720</samples>
                             <resolution>1</resolution>
-                            <min_angle>-0.785398163</min_angle>
-                            <max_angle>3.92699</max_angle>
+                            <min_angle>-0.76794</min_angle> <!-- -0.76794 = -44 deg, 0.78539 = -45-->
+                            <max_angle>3.90953</max_angle> <!-- 3.90953 = 224 deg, 3.92699 = 225-->
                         </horizontal>
                     </scan>
                     <range>
