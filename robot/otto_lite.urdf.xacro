@@ -79,14 +79,13 @@
             izz="0.001"/>
         </inertial>
     </link>
-
-
+ 
     <!--imu link-->
     <link name="imu_link"/>
 
     <!-- IMU -->
     <gazebo reference='imu_link'>
-         <sensor name="tb3_imu" type="imu"> <!--taken from turtlebot3_simulations-->
+        <sensor name="tb3_imu" type="imu"> <!--taken from turtlebot3_simulations-->
         <always_on>true</always_on>
         <update_rate>200</update_rate>
         <topic>imu</topic>
@@ -304,9 +303,9 @@
 
     <!--Sensor Joints-->
     <joint name="imu_joint" type="fixed">
+        <origin xyz="0 0 0.04" rpy="0 0 0"/>
         <parent link="base_link"/>
         <child link="imu_link"/>
-        <origin xyz="0 0 0.04" rpy="0 0 0"/>
     </joint>
 
     <!-- ROS 2 Control-->
@@ -341,6 +340,15 @@
           <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
             <parameters>$(find otto_gazebo)/config/omni_wheel_params.yaml</parameters>
           </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin
+            filename="gz-sim-pose-publisher-system"
+            name="gz::sim::systems::PosePublisher">
+            <use_pose_vector_msg>true</use_pose_vector_msg>
+            <publish_model_pose>true</publish_model_pose>
+        </plugin>
     </gazebo>
 
 </robot>

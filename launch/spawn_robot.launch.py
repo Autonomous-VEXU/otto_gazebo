@@ -8,6 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression, PathJoinSubstitution, Command
 from launch_ros.actions import Node
 from ros_gz_bridge.actions import RosGzBridge
+from ros_gz_interfaces.msg import Contacts
 
 def generate_launch_description():
 
@@ -65,7 +66,7 @@ def generate_launch_description():
     # Gazebo Sim --> ROS topic bridge
     gazebo_bridge = RosGzBridge(
         bridge_name='otto_ros_bridge',
-        config_file=topic_bridge_config,
+        config_file=topic_bridge_config
     )
 
     # specific QoS for tf_static parameter bridge
