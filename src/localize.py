@@ -57,7 +57,6 @@ class Localize(Node):
         self.publish_spin(0.5)
         # self.get_logger().info(f'Average Covariance: {avg_covariance}')
 
-
 def main(args=None):
     rclpy.init(args=args)
     node = Localize()
