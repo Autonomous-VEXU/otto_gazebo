@@ -11,7 +11,7 @@ def generate_launch_description():
     otto_gz = get_package_share_directory('otto_gazebo')
 
     vex_map_file = os.path.join(pb_sim, 'maps', 'vex_field_map_2.yaml')
-    keepout_mask_file = os.path.join(pb_sim, 'maps', 'goal_keepout_filter.yaml')
+    keepout_mask_file = os.path.join(pb_sim, 'maps', 'vex_field_map_keepout.yaml')
 
     keepout_info_params = {
         'use_sim_time': True,
