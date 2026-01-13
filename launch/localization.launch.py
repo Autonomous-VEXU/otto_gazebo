@@ -99,7 +99,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # robot_localization package (unused right now)
+    # robot_localization package
     robot_localization = Node(
         package='robot_localization',
         executable='ekf_node',
@@ -116,6 +116,7 @@ def generate_launch_description():
         rl_config_cmd,
         map_server,
         amcl,
+        robot_localization,
         lifecycle_manager,
-        rviz2,
+        rviz2
     ])
