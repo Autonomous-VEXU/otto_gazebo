@@ -86,7 +86,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time,
             'autostart': True,
-            'node_names': ['map_server', 'amcl']}]
+            'node_names': ['map_server']}]
     )
 
     # Rviz
