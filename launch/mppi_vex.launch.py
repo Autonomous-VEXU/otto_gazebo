@@ -24,7 +24,7 @@ def generate_launch_description():
 
     world = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pb_sim, 'launch', 'world_select.launch.py')),
-        launch_arguments={'world': 'pushback_no_blocks'}.items()
+        launch_arguments={'world': 'empty_field'}.items()
     )
 
     otto = IncludeLaunchDescription(
