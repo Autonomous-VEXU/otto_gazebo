@@ -3,9 +3,8 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, TimerAction, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PythonExpression, PathJoinSubstitution, Command
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch.conditions import IfCondition
 
@@ -18,7 +17,6 @@ def generate_launch_description():
     logical_cam_params = os.path.join(pkg_dir, 'config', 'logical_camera_bridge.yaml')
     cam_params = os.path.join(pkg_dir, 'config', 'camera_bridge.yaml')
     ground_truth = os.path.join(pkg_dir, 'config', 'ground_truth_pose.yaml')
-
 
     # launch args for the bridges
     lc_bridge = LaunchConfiguration('logical_cams')
