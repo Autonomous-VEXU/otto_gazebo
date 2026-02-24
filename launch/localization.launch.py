@@ -11,7 +11,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     # package directories
     pkg_directory = get_package_share_directory('otto_gazebo')
-    map_dir = get_package_share_directory('pushback_sim')
+    map_dir = get_package_share_directory('otto_navigation')
 
     # default file paths
     default_map = os.path.join(map_dir, 'maps', 'vex_field_map.yaml')

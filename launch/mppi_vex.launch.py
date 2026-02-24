@@ -7,10 +7,11 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     # file + directory paths
+    otto_nav= get_package_share_directory('otto_navigation')
     pb_sim = get_package_share_directory('pushback_sim')
     otto_gz = get_package_share_directory('otto_gazebo')
 
-    vex_map_file = os.path.join(pb_sim, 'maps', 'vex_field_map.yaml')
+    vex_map_file = os.path.join(otto_nav, 'maps', 'vex_field_map.yaml')
 
     # world launch file
     world = IncludeLaunchDescription(
