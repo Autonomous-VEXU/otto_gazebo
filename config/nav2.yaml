@@ -79,6 +79,9 @@ bt_navigator:
       - route
       - undock_robot
       - wait
+    plugin_lib_names:
+      - otto_nav2_bt_nodes
+      - otto_nav2_get_current_pose_action_bt_node
 
 docking_server:
   ros__parameters:
