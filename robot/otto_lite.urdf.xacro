@@ -11,6 +11,9 @@
     <xacro:property name="wheel_offs" value="0.14"/>
     <xacro:property name="wheel_rad" value="0.0349253"/>
     <xacro:property name="wheel_width" value="0.02159"/>
+
+    <!--logical camera include file-->
+    <!-- <xacro:include filename="$(find otto_gazebo)/robot/logical_cameras.urdf.xacro"/> -->
     
     <!--world link-->
     <link name='base_footprint'/>
