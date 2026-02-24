@@ -11,10 +11,11 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    ## ============= Launch Configs ============== ##
+    # directory and file paths
     nav2_launch_file_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
     rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_navigation2'),'rviz','tb3_navigation2.rviz')
 
+    # launch configs
     map_dir = LaunchConfiguration(
         'map',
         default=os.path.join(
@@ -33,7 +34,7 @@ def generate_launch_description():
     
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     
-    ## ============= Launch Arguments ============== ##
+    # Launch arguments
     map_launch_arg = DeclareLaunchArgument(
         'map',
         default_value=map_dir,
@@ -52,7 +53,7 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
     
-    ## ============= Nav2 Launch File ============== ##
+    # Nav2 launch file
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([nav2_launch_file_dir, '/bringup_launch.py']),
         launch_arguments={
@@ -61,7 +62,7 @@ def generate_launch_description():
             'params_file': param_dir}.items()
     )
 
-    ## ============= Rviz Node ============== ##
+    # Rviz2
     rviz2 = Node(
         package='rviz2',
         executable='rviz2',
