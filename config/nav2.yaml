@@ -27,7 +27,7 @@ amcl:
     recovery_alpha_slow: 0.0
     resample_interval: 1
     robot_model_type: "nav2_amcl::OmniMotionModel"
-    save_pose_rate: 0.5
+    save_pose_rate: 0.1
     sigma_hit: 0.2
     tf_broadcast: true
     transform_tolerance: 0.5
@@ -79,6 +79,9 @@ bt_navigator:
       - route
       - undock_robot
       - wait
+    plugin_lib_names:
+      - otto_nav2_bt_nodes
+      - otto_nav2_get_current_pose_action_bt_node
 
 docking_server:
   ros__parameters:
@@ -127,19 +130,19 @@ controller_server:
       time_steps: 56
       model_dt: 0.08
       batch_size: 1000
-      vx_std: 0.3  # 0.1 <-- std = deviation = agressiveness in driving i think?
+      vx_std: 0.3  # 0.1 <-- std = deviation
       vy_std: 0.3  # 0.1
       wz_std: 0.3  # 0.1
-      vx_max: 4.0  # 0.5
-      vx_min: -4.0  # -0.35
-      vy_max: 4.0  # 0.5
-      vy_min: -4.0  # -0.35
-      wz_max: 6.0  # 3.0
+      vx_max: 2.0  # 0.5
+      vx_min: -2.0  # -0.35
+      vy_max: 2.0  # 0.5
+      vy_min: -2.0  # -0.35
+      wz_max: 12.0  # 3.0
       ax_max: 4.0  # 3.0
       ax_min: -4.0  # -3.0
       ay_min: -4.0  # -3.0
       ay_max: 4.0  # 3.0
-      az_max: 6.0  # 4.0
+      az_max: 24.0  # 4.0
       iteration_count: 1  # 2
       prune_distance: 5.0  # 3.0
       transform_tolerance: 0.8
@@ -236,6 +239,7 @@ local_costmap:
       resolution: 0.05
       footprint: "[[0.1, 0.1], [0.1, -0.1], [-0.1, -0.1], [-0.1, 0.1]]"
       plugins: ["obstacle_layer", "voxel_layer", "inflation_layer"]
+      filters: ["keepout_filter"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         inflation_radius: 0.5
@@ -270,6 +274,10 @@ local_costmap:
           data_type: "LaserScan"
           obstacle_min_range: 0.25
           raytrace_min_range: 0.25
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
       static_layer:
         map_subscribe_transient_local: true
       always_send_full_costmap: true
@@ -287,6 +295,7 @@ global_costmap:
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "voxel_layer", "inflation_layer"]
+      filters: ["keepout_filter"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
@@ -317,6 +326,10 @@ global_costmap:
           data_type: "LaserScan"
           obstacle_min_range: 0.25
           raytrace_min_range: 0.25
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: true
@@ -330,7 +343,22 @@ global_costmap:
 map_server:
   ros__parameters:
     yaml_filename: "vex_field_map.yaml"
+    
+costmap_filter_info_server:
+  ros__parameters:
+    use_sim_time: true
+    type: 0
+    filter_info_topic: "/costmap_filter_info"
+    mask_topic: "/keepout_filter_mask"
+    base: 0.0
+    multiplier: 1.0
 
+filter_mask_server:
+  ros__parameters:
+    use_sim_time: true
+    frame_id: "map"
+    topic_name: "/keepout_filter_mask"
+    
 map_saver:
   ros__parameters:
     save_map_timeout: 5.0
@@ -486,12 +514,12 @@ velocity_smoother:
     smoothing_frequency: 20.0  # 20.0
     scale_velocities: false
     feedback: "OPEN_LOOP"
-    max_velocity: [4.0, 4.0, 6.0]  # [4.0, 4.0, 3.0]
-    min_velocity: [-4.0, -4.0, -6.0]  # [-4.0, -4.0, -3.0]
+    max_velocity: [2.0, 2.0, 12.0]
+    min_velocity: [-2.0, -2.0, -12.0]
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
-    max_accel: [4.0, 4.0, 6.0]  # [4.0, 4.0, 4.0]
-    max_decel: [-4.0, -4.0, -6.0]  # [-4.0, -4.0, -4.0]
+    max_accel: [4.0, 4.0, 24.0]
+    max_decel: [-4.0, -4.0, -24.0]
     odom_topic: "odom"
     odom_duration: 0.1
     use_realtime_priority: false
