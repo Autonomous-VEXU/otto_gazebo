@@ -13,7 +13,7 @@
     <xacro:property name="wheel_width" value="0.02159"/>
 
     <!--logical camera include file-->
-    <!-- <xacro:include filename="$(find otto_gazebo)/robot/logical_cameras.urdf.xacro"/> -->
+    <xacro:include filename="$(find otto_gazebo)/robot/logical_cameras.urdf.xacro"/> 
     
     <!--world link-->
     <link name='base_footprint'/>
