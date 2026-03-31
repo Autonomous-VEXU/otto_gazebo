@@ -34,14 +34,14 @@
   direction: GZ_TO_ROS
 
 # LiDAR #1
-- ros_topic_name: "scan_1"
+- ros_topic_name: "/left_lidar/scan"
   gz_topic_name: "scan_1"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
 
 #  LiDAR #2
-- ros_topic_name: "scan_2"
+- ros_topic_name: "/right_lidar/scan"
   gz_topic_name: "scan_2"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
