@@ -181,9 +181,9 @@
     </xacro:macro>
 
     <xacro:wheel_link name="wheel_a"/>
-    <xacro:wheel_link name="wheel_b"/>
-    <xacro:wheel_link name="wheel_c"/>
-    <xacro:wheel_link name="wheel_d"/>
+    <xacro:wheel_link name="front_right_wheel"/>
+    <xacro:wheel_link name="front_left_wheel"/>
+    <xacro:wheel_link name="back_right_wheel"/>
 
 
     <!-- LiDAR x2 -->
@@ -276,31 +276,31 @@
         <child link='intake_link'/>
     </joint>
 
-    <joint name="chassis_to_wheel_a" type="continuous">
+    <joint name="back_left_wheel_joint" type="continuous">
         <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi/4}"/>
         <parent link="base_link"/>
-        <child link="wheel_a"/>
+        <child link="back_left_wheel"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
-    <joint name="chassis_to_wheel_b" type="continuous"> 
+    <joint name="front_right_wheel_joint" type="continuous"> 
         <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${-3* (pi/4)}"/>
         <parent link="base_link"/>
-        <child link="wheel_b"/>
+        <child link="front_right_wheel"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
-    <joint name="chassis_to_wheel_c" type="continuous">
+    <joint name="front_left_wheel_joint" type="continuous">
         <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi/4}"/>
         <parent link="base_link"/>
-        <child link="wheel_c"/>
+        <child link="front_left_wheel"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
-    <joint name="chassis_to_wheel_d" type="continuous">
+    <joint name="back_right_wheel_joint" type="continuous">
         <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${3 *(pi/4)}"/>
         <parent link="base_link"/>
-        <child link="wheel_d"/>
+        <child link="back_right_wheel"/>
         <axis xyz="0 1 0"/> 
     </joint>
 
@@ -316,22 +316,22 @@
         <hardware>
             <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
-        <joint name="chassis_to_wheel_a">
+        <joint name="back_left_wheel_joint">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
-        <joint name="chassis_to_wheel_b">
+        <joint name="front_right_wheel_joint">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
-        <joint name="chassis_to_wheel_c">
+        <joint name="front_left_wheel_joint">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
-        <joint name="chassis_to_wheel_d">
+        <joint name="back_right_wheel_joint">
             <command_interface name="velocity"/>
             <state_interface name="position"/>
             <state_interface name="velocity"/>

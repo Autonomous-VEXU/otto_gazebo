@@ -7,6 +7,7 @@ from launch.actions import DeclareLaunchArgument, TimerAction, IncludeLaunchDesc
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression, PathJoinSubstitution, Command
 from launch_ros.actions import Node
+from launch.conditions import IfCondition
 from ros_gz_bridge.actions import RosGzBridge
 
 def generate_launch_description():
@@ -39,6 +40,13 @@ def generate_launch_description():
         description='boolean to determine which urdf file to use (true = otto_lite.urdf.xacro)'
     )
 
+    logical_cams = LaunchConfiguration('logical_cams')
+    logical_cams_cmd = DeclareLaunchArgument(
+            'logical_cams',
+            default_value='true',
+            description='launches the ros gz bridge for the logical cameras'
+    ) 
+
     # conditionally select URDF file
     urdf_file_name = PythonExpression([
         "'otto.urdf.xacro' if '",
@@ -59,14 +67,22 @@ def generate_launch_description():
         "' == 'false' else 'robot_lite_bridge.yaml'"
     ])
 
-    # gazebo --> ros bridge config file path
+    # gazebo --> ros bridge config file paths
     topic_bridge_config = PathJoinSubstitution([this_pkg, 'config', gz_bridge_config_name])
+    cams_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'logical_camera_bridge.yaml'])
 
     # Gazebo Sim --> ROS topic bridge
     gazebo_bridge = RosGzBridge(
         bridge_name='otto_ros_bridge',
         config_file=topic_bridge_config
     )
+
+    gazebo_bridge_cams = RosGzBridge(
+        bridge_name='logical_cams_ros_bridge',
+        config_file=cams_bridge_config,
+        condition=IfCondition(logical_cams)
+    )
+
 
     # specific QoS for tf_static parameter bridge
     tf_st_bridge = Node(
@@ -100,7 +116,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
         ),
-        launch_arguments={'robotname':'x_drive'}.items()
+        launch_arguments={'robotname':'otto'}.items()
     )
 
     # Gazebo Sim entity spawner
@@ -155,7 +171,9 @@ def generate_launch_description():
         declare_urdf_lite_cmd,
         declare_x_position_cmd,
         declare_y_position_cmd,
+        logical_cams_cmd,
         gazebo_bridge,
+        gazebo_bridge_cams,
         tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
