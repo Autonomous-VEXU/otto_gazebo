@@ -23,7 +23,7 @@ def generate_launch_description():
         default_value='0.5',
         description='X position of the robot'
     )
-
+ 
     # robot y pose argument
     y_pose = LaunchConfiguration('y_pose')
     declare_y_position_cmd = DeclareLaunchArgument(
