@@ -101,7 +101,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
         ),
-        launch_arguments={'robotname':'x_drive'}.items()
+        launch_arguments={'robotname':'otto'}.items()
     )
 
     # Gazebo Sim entity spawner
