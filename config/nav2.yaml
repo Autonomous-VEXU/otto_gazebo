@@ -37,10 +37,10 @@ amcl:
     z_max: 0.05
     z_rand: 0.15
     z_short: 0.05
-    scan_topic: scan_3
+    scan_topic: scan_merged
     map_topic: map
     set_initial_pose: true
-    always_reset_initial_pose: false
+    always_reset_initial_pose: true
     first_map_only: false
     initial_pose:
       x: 0.5
@@ -79,7 +79,7 @@ bt_navigator:
       - route
       - undock_robot
       - wait
-    plugin_lib_names:
+    plugin_lib_names: # comment out to get rid of plugin issues (kylie)
       - otto_nav2_bt_nodes
       - otto_nav2_get_current_pose_action_bt_node
 
@@ -249,7 +249,7 @@ local_costmap:
         enabled: true
         observation_sources: scan
         scan:
-          topic: /scan_3
+          topic: /scan_merged
           max_obstacle_height: 2.0
           clearing: true
           marking: true
@@ -267,7 +267,7 @@ local_costmap:
         mark_threshold: 0
         observation_sources: scan
         scan:
-          topic: /scan_3
+          topic: /scan_merged
           max_obstacle_height: 2.0
           clearing: true
           marking: true
@@ -301,7 +301,7 @@ global_costmap:
         enabled: true
         observation_sources: scan
         scan:
-          topic: /scan_3
+          topic: /scan_merged
           max_obstacle_height: 2.0
           clearing: true
           marking: true
@@ -319,7 +319,7 @@ global_costmap:
         mark_threshold: 0
         observation_sources: scan
         scan:
-          topic: /scan_3
+          topic: /scan_merged
           max_obstacle_height: 2.0
           clearing: true
           marking: true
@@ -505,7 +505,7 @@ collision_monitor:
     scan:
       source_timeout: 0.2
       type: "scan"
-      topic: "/scan_3"
+      topic: "/scan_merged"
       enabled: true
 
 velocity_smoother:
