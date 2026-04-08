@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+    <xacro:arg name="cams" default="false"/>
+    <xacro:property name="cams" value="$(arg cams)"/>
+
+    <!-- Conditional Includes + Parameters-->
+    <xacro:if value="${cams}">
+        <!-- Camera properties-->
+        <xacro:property name="camera_x" value="0.114"/>
+        <xacro:property name="camera_y" value="0.116"/>
+        <xacro:property name="camera_z" value="0.197"/>
+        <xacro:property name='tilt_angle' value=' 0.122'/> <!--this is the p value in rpy!-->
+
+        <xacro:include filename="$(find otto_gazebo)/robot/rendered_cameras.urdf.xacro" />
+    </xacro:if>
+
+    <xacro:arg name="l_cams" default="false"/>
+    <xacro:property name="l_cams" value="$(arg cams)"/>
+
+    <xacro:if value="${l_cams}">
+        <!-- Camera properties-->
+        <xacro:property name="camera_x" value="0.114"/>
+        <xacro:property name="camera_y" value="0.116"/>
+        <xacro:property name="camera_z" value="0.197"/>
+        <xacro:property name='tilt_angle' value=' 0.122'/> <!--this is the p value in rpy!-->
+
+        <xacro:include filename="$(find otto_gazebo)/robot/logical_cameras.urdf.xacro" />
+    </xacro:if>
+
+</robot>

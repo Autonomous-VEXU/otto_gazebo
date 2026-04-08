@@ -32,44 +32,33 @@ def generate_launch_description():
         description='Y position of the robot'
     ) 
 
-    # urdf selection argument
-    urdf_lite = LaunchConfiguration('robot_lite')
-    declare_urdf_lite_cmd = DeclareLaunchArgument(
-        'robot_lite',
-        default_value='true',
-        description='boolean to determine which urdf file to use (true = otto_lite.urdf.xacro)'
-    )
 
     logical_cams = LaunchConfiguration('logical_cams')
     logical_cams_cmd = DeclareLaunchArgument(
-            'logical_cams',
-            default_value='true',
-            description='launches the ros gz bridge for the logical cameras'
+        'logical_cams',
+        default_value='false',
+        description='launches the ros gz bridge for the logical cameras'
     ) 
 
-    # conditionally select URDF file
-    urdf_file_name = PythonExpression([
-        "'otto.urdf.xacro' if '",
-        urdf_lite,
-        "' == 'false' else 'otto_lite.urdf.xacro'"
-    ])
+    rendered_cams = LaunchConfiguration('cams')
+    rendered_cams_cmd = DeclareLaunchArgument(
+        'cams',
+        default_value='false',
+        description='launches the ros gz bridge for the logical cameras'
+    ) 
 
     # generate urdf file path
-    urdf_path = PathJoinSubstitution([this_pkg, 'robot', urdf_file_name])
+    urdf_path = PathJoinSubstitution([this_pkg, 'robot', 'otto.urdf.xacro'])
     
     # convert urdf (process at launch time)
-    urdf = Command(['xacro ', urdf_path])
-
-    # conditionally set gz_ros_bridge config file
-    gz_bridge_config_name = PythonExpression([
-        "'robot_bridge.yaml' if '",
-        urdf_lite,
-        "' == 'false' else 'robot_lite_bridge.yaml'"
-    ])
+    urdf = Command(['xacro ', urdf_path,
+                    ' l_cams:=', logical_cams,
+                    ' cams:=', rendered_cams])
 
     # gazebo --> ros bridge config file paths
-    topic_bridge_config = PathJoinSubstitution([this_pkg, 'config', gz_bridge_config_name])
-    cams_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'logical_camera_bridge.yaml'])
+    topic_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'robot_bridge.yaml'])
+    l_cams_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'logical_camera_bridge.yaml'])
+    cams_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'camera_bridge.yaml'])
 
     # Gazebo Sim --> ROS topic bridge
     gazebo_bridge = RosGzBridge(
@@ -77,12 +66,17 @@ def generate_launch_description():
         config_file=topic_bridge_config
     )
 
-    gazebo_bridge_cams = RosGzBridge(
+    gazebo_bridge_l_cams = RosGzBridge(
         bridge_name='logical_cams_ros_bridge',
-        config_file=cams_bridge_config,
+        config_file=l_cams_bridge_config,
         condition=IfCondition(logical_cams)
     )
 
+    gazebo_bridge_cams = RosGzBridge(
+        bridge_name='cams_ros_bridge',
+        config_file=cams_bridge_config,
+        condition=IfCondition(rendered_cams)
+    )
 
     # specific QoS for tf_static parameter bridge
     tf_st_bridge = Node(
@@ -168,12 +162,13 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        declare_urdf_lite_cmd,
         declare_x_position_cmd,
         declare_y_position_cmd,
+        rendered_cams_cmd,
         logical_cams_cmd,
         gazebo_bridge,
         gazebo_bridge_cams,
+        gazebo_bridge_l_cams,
         tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
