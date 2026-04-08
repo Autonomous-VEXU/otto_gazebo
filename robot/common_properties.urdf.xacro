@@ -1,0 +1,36 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- File properties -->
+    <xacro:property name="model_path" value="package://otto_description/models"/>
+    <xacro:property name="package_path" value="package://otto_description/config"/>
+
+    <!-- Wheel properties-->
+    <xacro:property name="wheel_offs" value="0.14"/>
+    <xacro:property name="wheel_rad" value="0.0349253"/>
+    <xacro:property name="wheel_width" value="0.02159"/>
+
+    <!-- CLI args + properties -->
+    <xacro:arg name="cams" default="false"/>
+    <xacro:property name="cams" value="$(arg cams)"/>
+
+    <xacro:arg name="mock_hw" default="false"/>
+    <xacro:property name="mock_hw" value="$(arg mock_hw)"/>
+
+    <xacro:arg name="serial_port" default="/dev/ttyACM1"/>
+    <xacro:property name="serial_port" value="$(arg serial_port)"/>
+
+    <xacro:arg name="baud_rate" default="115200"/>
+    <xacro:property name="baud_rate" value="$(arg baud_rate)"/>
+
+    <!-- Conditional Includes + Parameters-->
+    <xacro:if value="${cams}">
+        <!-- Camera properties-->
+        <xacro:property name="camera_x" value="0.114"/>
+        <xacro:property name="camera_y" value="0.116"/>
+        <xacro:property name="camera_z" value="0.197"/>
+        <xacro:property name='tilt_angle' value=' 0.122'/> <!--this is the p value in rpy!-->
+
+        <xacro:include filename="$(find otto_description)/robot/robot_cameras.urdf.xacro" />
+    </xacro:if>
+
+</robot>

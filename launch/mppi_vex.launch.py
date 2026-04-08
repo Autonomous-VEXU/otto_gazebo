@@ -11,6 +11,7 @@ from launch.conditions import IfCondition
 def generate_launch_description():
 
     # file + directory paths
+    otto_nav= get_package_share_directory('otto_navigation')
     pb_sim = get_package_share_directory('pushback_sim')
     otto_gz = get_package_share_directory('otto_gazebo')
     otto_nav = get_package_share_directory('otto_navigation')
@@ -23,19 +24,16 @@ def generate_launch_description():
         description='toggles using the keepout filter for the goals'
     ) 
 
-    # world launch file
     world = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pb_sim, 'launch', 'world_select.launch.py')),
         launch_arguments={'world': 'empty_field'}.items()
     )
 
-    # spawn robot
     otto = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(otto_gz, 'launch', 'spawn_robot.launch.py')),
         launch_arguments={'x_pose': '0.5','y_pose':'0.5'}.items()
     )
 
-    # nav2
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(otto_gz, 'launch', 'nav2.launch.py')),
         launch_arguments={'map': vex_map_file}.items()
