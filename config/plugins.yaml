@@ -1,0 +1,5 @@
+bt_navigator:
+  ros__parameters:
+    plugin_lib_names: # comment out to get rid of plugin issues (kylie)
+      - otto_nav2_bt_nodes
+      - otto_nav2_get_current_pose_action_bt_node

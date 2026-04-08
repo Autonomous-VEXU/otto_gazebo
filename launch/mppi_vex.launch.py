@@ -9,8 +9,9 @@ def generate_launch_description():
     # file + directory paths
     pb_sim = get_package_share_directory('pushback_sim')
     otto_gz = get_package_share_directory('otto_gazebo')
+    otto_nav = get_package_share_directory('otto_navigation')
 
-    vex_map_file = os.path.join(pb_sim, 'maps', 'vex_field_map.yaml')
+    vex_map_file = os.path.join(otto_nav, 'maps', 'vex_field_map.yaml')
 
     # world launch file
     world = IncludeLaunchDescription(
