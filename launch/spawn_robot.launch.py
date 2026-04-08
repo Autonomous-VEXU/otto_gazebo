@@ -32,7 +32,6 @@ def generate_launch_description():
         description='Y position of the robot'
     ) 
 
-
     logical_cams = LaunchConfiguration('logical_cams')
     logical_cams_cmd = DeclareLaunchArgument(
         'logical_cams',

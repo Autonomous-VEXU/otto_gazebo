@@ -14,10 +14,10 @@ omni_wheel_drive_controller:
     use_sim_time: true
     wheel_offset: 0.785398
     wheel_names:
-      - "chassis_to_wheel_c"
-      - "chassis_to_wheel_a"
-      - "chassis_to_wheel_d"
-      - "chassis_to_wheel_b"
+      - "front_left_wheel_joint"
+      - "back_left_wheel_joint"
+      - "back_right_wheel_joint"
+      - "front_right_wheel_joint"
     robot_radius: 0.19799 
     wheel_radius: 0.034925 
     odom_frame_id: odom
