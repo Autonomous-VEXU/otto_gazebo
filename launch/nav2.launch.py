@@ -13,15 +13,15 @@ def generate_launch_description():
 
     # directory and file paths
     nav2_launch_file_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
-    rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_navigation2'),'rviz','tb3_navigation2.rviz')
+    rviz_config_dir = os.path.join(get_package_share_directory('otto_navigation'),'rviz','nav2_basic.rviz')
 
     # launch configs
     map_dir = LaunchConfiguration(
         'map',
         default=os.path.join(
-            get_package_share_directory('turtlebot3_navigation2'),
-            'map',
-            'map.yaml')
+            get_package_share_directory('otto_navigation'),
+            'maps',
+            'vex_field_map.yaml')
     )
 
     param_dir = LaunchConfiguration(

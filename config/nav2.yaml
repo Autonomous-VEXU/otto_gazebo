@@ -7,10 +7,10 @@ amcl:
     alpha4: 0.05
     alpha5: 0.0
     base_frame_id: "base_link"
-    beam_skip_distance: 0.5
-    beam_skip_error_threshold: 0.9
+    beam_skip_distance: 0.04
+    beam_skip_error_threshold: 0.8
     beam_skip_threshold: 0.3
-    do_beamskip: false
+    do_beamskip: true # prevent opponent from messing up lidar?
     global_frame_id: "map"
     lambda_short: 0.1
     laser_likelihood_max_dist: 2.0
@@ -79,9 +79,9 @@ bt_navigator:
       - route
       - undock_robot
       - wait
-    plugin_lib_names: # comment out to get rid of plugin issues (kylie)
-      - otto_nav2_bt_nodes
-      - otto_nav2_get_current_pose_action_bt_node
+    # plugin_lib_names: # comment out to get rid of plugin issues (kylie)
+    #   - otto_nav2_bt_nodes
+    #   - otto_nav2_get_current_pose_action_bt_node
 
 docking_server:
   ros__parameters:
@@ -512,8 +512,13 @@ velocity_smoother:
   ros__parameters:
     use_sim_time: true
     smoothing_frequency: 20.0  # 20.0
+<<<<<<< HEAD
+    scale_velocities: true
+    feedback: "CLOSED_LOOP"
+=======
     scale_velocities: false
     feedback: "OPEN_LOOP"
+>>>>>>> 592dff5bd35692e2a3605ab8cc653db2f3bc63ce
     max_velocity: [2.0, 2.0, 12.0]
     min_velocity: [-2.0, -2.0, -12.0]
     deadband_velocity: [0.0, 0.0, 0.0]

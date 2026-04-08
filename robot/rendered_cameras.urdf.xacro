@@ -1,14 +1,7 @@
 <?xml version='1.0'?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
-
-    <!-- Camera properties-->
-    <xacro:property name="camera_x" value="0.114"/>
-    <xacro:property name="camera_y" value="0.116"/>
-    <xacro:property name="camera_z" value="0.197"/>
-    <xacro:property name='tilt_angle' value=' 0.122'/> <!--this is the p value in rpy!-->
-
-    <!-- USB Camera x4 -->
-    <xacro:macro name='logical_cam' params='camera_name xyz rpy'>
+ <!-- USB Camera x4 -->
+    <xacro:macro name='usb_cam' params='camera_name xyz rpy'>
 
         <link name='${camera_name}_link'>
             <visual>
@@ -54,27 +47,33 @@
         </joint>
 
         <gazebo reference='${camera_name}_link'>
-            <sensor name='${camera_name}_logical' type="logical_camera">
+            <sensor name='${camera_name}_sensor' type="camera">
                 <pose>0 0 0 0 0 0</pose>
-                <logical_camera>
+                <camera>
                     <horizontal_fov>1.26</horizontal_fov>
-                    <near>0.001</near>
-                    <far>10</far>
-                    <aspect_ratio>1.6</aspect_ratio>
-                </logical_camera>
+                    <image>
+                        <width>1920</width>
+                        <height>1200</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.001</near>
+                        <far>20</far>
+                    </clip> 
+                </camera>
                 <always_on>true</always_on>
                 <update_rate>10</update_rate> <!-- i think our cameras run at 90fps max, but for sim, even 30 kills it. maybe 10 will be better? -->
                 <visualize>true</visualize>
-                <topic>/${camera_name}/data</topic>
+                <topic>/${camera_name}/image_raw</topic>
                 <gz_frame_id>${camera_name}_link_optical</gz_frame_id>
             </sensor> 
         </gazebo>
     </xacro:macro> 
 
     <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
-    <xacro:logical_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 ${tilt_angle} ${3*pi/4}'/> 
-    <xacro:logical_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 ${tilt_angle} -${3*pi/4}'/> 
-    <xacro:logical_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 ${tilt_angle} ${pi/4}'/> 
-    <xacro:logical_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 ${tilt_angle} -${pi/4}'/> 
-    
+    <xacro:usb_cam camera_name='cam1' xyz='-${camera_x} ${camera_y} ${camera_z}' rpy='0 ${tilt_angle} ${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam2' xyz='-${camera_x} -${camera_y} ${camera_z}' rpy='0 ${tilt_angle} -${3*pi/4}'/> 
+    <xacro:usb_cam camera_name='cam3' xyz='${camera_x} ${camera_y} ${camera_z}' rpy='0 ${tilt_angle} ${pi/4}'/> 
+    <xacro:usb_cam camera_name='cam4' xyz='${camera_x} -${camera_y} ${camera_z}' rpy='0 ${tilt_angle} -${pi/4}'/> 
+
 </robot>
