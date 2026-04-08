@@ -19,7 +19,7 @@ def generate_launch_description():
     keepout_filter = LaunchConfiguration('keepout_filter')
     keepout_filter_cmd = DeclareLaunchArgument(
         'keepout_filter',
-        default_value='True',
+        default_value='true',
         description='toggles using the keepout filter for the goals'
     ) 
 
@@ -44,7 +44,7 @@ def generate_launch_description():
     # keepout filter
     costmap_filter = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(otto_gz, 'launch', 'keepout_filter.launch.py')),
-        launch_arguments={'use_sim_time': 'True'}.items(),
+        launch_arguments={'use_sim_time': 'true'}.items(),
         condition=IfCondition(keepout_filter)
     )
 

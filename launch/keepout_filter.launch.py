@@ -3,7 +3,7 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
@@ -25,7 +25,7 @@ def generate_launch_description():
         description='keepout map file name from otto_navigation/maps directory'
     ) 
 
-    keepout_mask_file = os.path.join(otto_nav, 'maps', ko_map_name)
+    keepout_mask_file = PathJoinSubstitution([otto_nav, 'maps', ko_map_name])
 
     keepout_info_params = {
         'use_sim_time': use_sim_time,
