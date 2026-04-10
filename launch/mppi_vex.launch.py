@@ -2,9 +2,8 @@ import os
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.substitutions import LaunchConfiguration
-from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
 
@@ -24,19 +23,24 @@ def generate_launch_description():
         description='toggles using the keepout filter for the goals'
     ) 
 
+    headless_launch_arg = DeclareLaunchArgument(
+        'headless',
+        description='Run headless'
+    )
+
     world = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pb_sim, 'launch', 'world_select.launch.py')),
-        launch_arguments={'world': 'empty_field'}.items()
+        launch_arguments={'world': 'pushback', 'headless': LaunchConfiguration('headless')}.items()
     )
 
     otto = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(otto_gz, 'launch', 'spawn_robot.launch.py')),
-        launch_arguments={'x_pose': '0.5','y_pose':'0.5'}.items()
+        launch_arguments={'x_pose': '0','y_pose':'0.5'}.items()
     )
 
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(otto_gz, 'launch', 'nav2.launch.py')),
-        launch_arguments={'map': vex_map_file}.items()
+        launch_arguments={'map': vex_map_file, 'headless': LaunchConfiguration('headless')}.items()
     )
 
     # keepout filter
@@ -53,6 +57,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         keepout_filter_cmd,
+        headless_launch_arg,
         world,
         otto,
         nav2_delay,

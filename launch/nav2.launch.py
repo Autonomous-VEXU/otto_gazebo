@@ -52,6 +52,11 @@ def generate_launch_description():
         default_value='true',
         description='Use simulation (Gazebo) clock if true'
     )
+
+    headless_launch_arg = DeclareLaunchArgument(
+        'headless',
+        description='Run headless'
+    )
     
     # Nav2 launch file
     nav2_launch = IncludeLaunchDescription(
@@ -76,6 +81,7 @@ def generate_launch_description():
         map_launch_arg,
         config_launch_arg,
         sim_time_launch_arg,
+        headless_launch_arg,
         nav2_launch,
-        rviz2
+        *([] if LaunchConfiguration('headless') else [rviz2])
     ])
