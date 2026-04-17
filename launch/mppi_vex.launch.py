@@ -25,6 +25,7 @@ def generate_launch_description():
 
     headless_launch_arg = DeclareLaunchArgument(
         'headless',
+        default_value='False',
         description='Run headless'
     )
 

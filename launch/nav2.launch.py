@@ -7,6 +7,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 
 def generate_launch_description():
@@ -55,6 +56,7 @@ def generate_launch_description():
 
     headless_launch_arg = DeclareLaunchArgument(
         'headless',
+        default_value='False',
         description='Run headless'
     )
     
@@ -74,7 +76,8 @@ def generate_launch_description():
         name='rviz2',
         arguments=['-d', rviz_config_dir],
         parameters=[{'use_sim_time': use_sim_time}],
-        output='screen'
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('headless'))
     )
 
     return LaunchDescription([
@@ -83,5 +86,5 @@ def generate_launch_description():
         sim_time_launch_arg,
         headless_launch_arg,
         nav2_launch,
-        *([] if LaunchConfiguration('headless') else [rviz2])
+        rviz2
     ])
