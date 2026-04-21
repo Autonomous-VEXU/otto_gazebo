@@ -86,7 +86,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time,
             'autostart': True,
-            'node_names': ['map_server']}]
+            'node_names': ['map_server', 'amcl']}]
     )
 
     # Rviz
@@ -117,5 +117,6 @@ def generate_launch_description():
         map_server,
         amcl,
         lifecycle_manager,
-        rviz2
+        rviz2,
+        robot_localization
     ])

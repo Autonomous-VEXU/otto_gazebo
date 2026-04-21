@@ -74,10 +74,10 @@ ekf_filter_node:
 
         # The filter accepts an arbitrary number of inputs from each input message type (nav_msgs/Odometry,
         # geometry_msgs/PoseWithCovarianceStamped, geometry_msgs/TwistWithCovarianceStamped,
-        # sensor_msgs/Imu). To add an input, simply append the next number in the sequence to its "base" name, e.g., odom0,
+        # sensor_add an input, simply append the next number imsgs/Imu). To add an input, simply append the next number in the sequence to its "base" name, e.g., odom0,
         # odom1, twist0, twist1, imu0, imu1, imu2, etc. The value should be the topic name. These parameters obviously have no
         # default values, and must be specified.
-        odom0: /odom
+        odom0: /odometry/filtered
 
         # Each sensor reading updates some or all of the filter's state. These options give you greater control over which
         # values from each measurement are fed to the filter. For example, if you have an odometry message as input, but only
@@ -126,7 +126,7 @@ ekf_filter_node:
         # For messages that have both pose and twist data, the parameter specifies to which part of the message we are applying
         # the thresholds.
         odom0_pose_rejection_threshold: 5.0
-        odom0_twist_rejection_threshold: 1.0
+        odom0_twist_rejection_threshold: 0.2
 
         # # Further input parameter examples ====================================
         # odom1: example/odom2
@@ -141,26 +141,7 @@ ekf_filter_node:
         # odom1_pose_rejection_threshold: 2.0
         # odom1_twist_rejection_threshold: 0.2
 
-        pose0: /amcl_pose
-        pose0_config: [true,  true,  false,
-                       false, false, false,
-                       false, false, false,
-                       false, false, false,
-                       false, false, false]
-        pose0_differential: true
-        pose0_relative: false
-        pose0_queue_size: 5
-        pose0_rejection_threshold: 2.0  # Note the difference in parameter name
-
-        # twist0: example/twist
-        # twist0_config: [false, false, false,
-        #                 false, false, false,
-        #                 true,  true,  true,
-        #                 false, false, false,
-        #                 false, false, false]
-        # twist0_queue_size: 3
-        # twist0_rejection_threshold: 2.0
-
+       
         imu0: /imu
         imu0_config: [false, false, false,
                       true,  true,  true,
@@ -200,21 +181,21 @@ ekf_filter_node:
         control_timeout: 0.2
 
         # Which velocities are being controlled. Order is vx, vy, vz, vroll, vpitch, vyaw.
-        control_config: [true, false, false, false, false, true]
+        control_config: [true, true, false, false, false, true]
 
         # Places limits on how large the acceleration term will be. Should match your robot's kinematics.
-        acceleration_limits: [1.3, 0.0, 0.0, 0.0, 0.0, 3.4]
+        acceleration_limits: [1.3, 1.3, 0.0, 0.0, 0.0, 3.4]
 
         # Acceleration and deceleration limits are not always the same for robots.
-        deceleration_limits: [1.3, 0.0, 0.0, 0.0, 0.0, 4.5]
+        deceleration_limits: [1.3, 1.3, 0.0, 0.0, 0.0, 4.5]
 
         # If your robot cannot instantaneously reach its acceleration limit, the permitted change can be controlled with these
         # gains
-        acceleration_gains: [0.8, 0.0, 0.0, 0.0, 0.0, 0.9]
+        acceleration_gains: [0.8, 0.8, 0.0, 0.0, 0.0, 0.9]
 
         # If your robot cannot instantaneously reach its deceleration limit, the permitted change can be controlled with these
         # gains
-        deceleration_gains: [1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        deceleration_gains: [1.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
         # [ADVANCED] The process noise covariance matrix can be difficult to tune, and can vary for each application, so it is
         # exposed as a configuration parameter. This matrix represents the noise we add to the total error after each
@@ -226,20 +207,20 @@ ekf_filter_node:
         # unspecified.
         # Note: the specification of covariance matrices can be cumbersome, so all matrix parameters in this package support
         # both full specification or specification of only the diagonal values.
-        process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.05, 0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.06, 0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.03, 0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.03, 0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.06, 0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025, 0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.025, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.04, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.01, 0.0,    0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.01, 0.0,    0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.02, 0.0,    0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.01, 0.0,    0.0,
-                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.01, 0.0,
+        process_noise_covariance: [0.05,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.05,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.06,   0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.03,   0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.03,   0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.06,   0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025,   0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.025,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.04,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.01,   0.0,    0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.01,   0.0,    0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.02,   0.0,    0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.01,   0.0,    0.0,
+                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.01,   0.0,
                                    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.015]
 
         # [ADVANCED] This represents the initial value for the state estimate error covariance matrix. Setting a diagonal
