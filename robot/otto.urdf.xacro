@@ -14,6 +14,7 @@
 
      <!--Robot Camera Properties -->
     <xacro:include filename="$(find otto_gazebo)/robot/robot_cams.urdf.xacro"/>
+    <xacro:include filename="$(find otto_gazebo)/robot/cam.urdf.xacro"/>
 
     <!--world link-->
     <link name='base_footprint'/>

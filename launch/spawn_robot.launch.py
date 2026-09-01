@@ -44,7 +44,7 @@ def generate_launch_description():
         'cams',
         default_value='false',
         description='launches the ros gz bridge for the logical cameras'
-    ) 
+    )
 
     # generate urdf file path
     urdf_path = PathJoinSubstitution([this_pkg, 'robot', 'otto.urdf.xacro'])
@@ -58,6 +58,7 @@ def generate_launch_description():
     topic_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'robot_bridge.yaml'])
     l_cams_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'logical_camera_bridge.yaml'])
     cams_bridge_config = PathJoinSubstitution([this_pkg, 'config', 'camera_bridge.yaml'])
+    fc_config = PathJoinSubstitution([this_pkg, 'config', 'front_cam.yaml'])
 
     # Gazebo Sim --> ROS topic bridge
     gazebo_bridge = RosGzBridge(
@@ -76,6 +77,11 @@ def generate_launch_description():
         config_file=cams_bridge_config,
         condition=IfCondition(rendered_cams)
     )
+
+    gazebo_bridge_front_cam = RosGzBridge(
+            bridge_name='cams_ros_bridge',
+            config_file=fc_config
+        )
 
     # specific QoS for tf_static parameter bridge
     tf_st_bridge = Node(
@@ -168,6 +174,7 @@ def generate_launch_description():
         gazebo_bridge,
         gazebo_bridge_cams,
         gazebo_bridge_l_cams,
+        gazebo_bridge_front_cam,
         tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
