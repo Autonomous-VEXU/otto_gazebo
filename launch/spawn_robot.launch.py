@@ -14,7 +14,7 @@ def generate_launch_description():
 
     # directory paths
     this_pkg = get_package_share_directory('otto_gazebo')
-    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
+    #scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
     # robot x pose argument
     x_pose = LaunchConfiguration('x_pose')
