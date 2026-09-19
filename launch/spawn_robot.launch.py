@@ -105,12 +105,36 @@ def generate_launch_description():
     ) 
 
     # laser_scan_merger launch file
-    scan_merger = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
-        ),
-        launch_arguments={'robotname':'otto'}.items()
+
+
+#    scan_merger = IncludeLaunchDescription(
+#        PythonLaunchDescriptionSource(
+#            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
+#        ),
+#        launch_arguments={'robotname':'otto'}.items()
+#    )
+    scan_merger_left = Node(
+            package='topic_tools',
+            executable='relay',
+            name='left_lidar_relay_node',
+            output='screen',
+            parameters=[{
+                'input_topic': '/left_lidar/scan',
+                'output_topic': '/scan_merged'
+            }]
     )
+
+           
+    scan_merger_right = Node(
+            package='topic_tools',
+            executable='relay',
+            name='right_lidar_relay_node',
+            output='screen',
+            parameters=[{
+                'input_topic': '/right_lidar/scan',
+                'output_topic': '/scan_merged'
+            }]
+        )
 
     # Gazebo Sim entity spawner
     start_gazebo_ros_spawner_cmd = Node(
@@ -171,7 +195,8 @@ def generate_launch_description():
         tf_st_bridge,
         robot_state_publisher_node,
         start_gazebo_ros_spawner_cmd,
-        scan_merger,
+        scan_merger_left,
+        scan_merger_right,
         joint_state_broadcaster_spawner,
         omni_controller_spawner
     ])
